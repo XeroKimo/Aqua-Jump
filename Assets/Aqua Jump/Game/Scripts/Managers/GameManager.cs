@@ -18,8 +18,7 @@ public class GameManager : MonoBehaviour
 
     private List<BasePlatform> m_platforms = new List<BasePlatform>();
 
-    public Vector2 m_debugStartPos;
-    public Vector2 m_debugCurrentPos;
+    public LineRenderer dragVisualizer;
 
     private void OnEnable()
     {
@@ -38,6 +37,8 @@ public class GameManager : MonoBehaviour
         {
             AddPlatform(platform);
         }
+
+        dragVisualizer.enabled = false;
     }
 
     private void FixedUpdate()
@@ -48,10 +49,6 @@ public class GameManager : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        Gizmos.color = Color.yellow;
-
-        Gizmos.DrawLine(m_debugStartPos, m_debugCurrentPos);
-
         Gizmos.color = Color.green;
 
         Gizmos.DrawWireCube(m_camera.transform.position, new Vector2(m_camera.orthographicSize * 2 * m_camera.aspect * m_wrappingBoundsExtent, m_camera.orthographicSize * 2));
@@ -59,15 +56,24 @@ public class GameManager : MonoBehaviour
 
     private void OnDrag(PlayerController controller)
     {
-        m_debugStartPos = m_camera.ScreenToWorldPoint(controller.startPos);
-        m_debugCurrentPos = m_camera.ScreenToWorldPoint(controller.currentPos);
+        dragVisualizer.enabled = m_aqua.canJump;
+
+        Vector2 startPos = m_camera.ScreenToWorldPoint(controller.startPos);
+        Vector2 currentPos = m_camera.ScreenToWorldPoint(controller.currentPos);
+        Vector2 deltaPos = startPos - currentPos;
+        Vector2 direction = deltaPos.normalized;
+        float magnitude = deltaPos.magnitude;
+
+        dragVisualizer.SetPosition(0, m_aqua.transform.position);
+        dragVisualizer.SetPosition(1, (Vector2)m_aqua.transform.position + direction * magnitude);
 
         if(controller.state == PlayerController.State.Ended)
         {
             if(m_aqua.canJump)
-                m_aqua.Jump((m_debugStartPos - m_debugCurrentPos).normalized, (m_debugStartPos - m_debugCurrentPos).magnitude);
-            m_debugStartPos = Vector2.zero;
-            m_debugCurrentPos = Vector2.zero;
+            {
+                m_aqua.Jump(direction, magnitude);
+                dragVisualizer.enabled = false;
+            }
         }
     }
 
@@ -116,10 +122,11 @@ public class GameManager : MonoBehaviour
     {
         foreach(BasePlatform platform in m_platforms)
         {
-            if(platform.transform.position.y + platform.colliderBounds.extents.y + m_aqua.colliderRadius < m_aqua.transform.position.y)
-            {
+            float minAquaHeight = platform.transform.position.y + platform.colliderBounds.extents.y + m_aqua.colliderRadius / 2;
+            if(minAquaHeight < m_aqua.transform.position.y && m_aqua.velocity.y < 0)
                 platform.EnableCollisions();
-            }
+            else
+                platform.DisableCollisions();
         }
     }
 }

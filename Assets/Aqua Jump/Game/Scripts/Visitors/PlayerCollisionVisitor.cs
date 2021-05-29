@@ -33,7 +33,7 @@ public class PlayerCollisionVisitor : PlatformCollisionVisitor
     {
         CommonResolution(platform);
         m_player.ResetVelocity();
-        m_player.Jump(m_player.launchDirection, m_player.launchPower);
+        m_player.Jump(m_player.launchDirection, m_player.launchPower * 0.8f);
     }
 
     public override void Resolve(MovingPlatform platform)

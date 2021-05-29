@@ -12,8 +12,8 @@ GameObject:
   - component: {fileID: 1409762656055830622}
   - component: {fileID: 1409762656055830623}
   - component: {fileID: 603186214}
-  - component: {fileID: 603186213}
   - component: {fileID: 3083912191841397458}
+  - component: {fileID: 3709917054252248074}
   m_Layer: 0
   m_Name: Ground
   m_TagString: Untagged
@@ -103,7 +103,19 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!61 &603186213
+--- !u!114 &3083912191841397458
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1409762656055830618}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b0390790d09691e4b8fab4545455a092, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!61 &3709917054252248074
 BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -114,7 +126,7 @@ BoxCollider2D:
   m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_UsedByEffector: 0
+  m_UsedByEffector: 1
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
@@ -129,15 +141,3 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!114 &3083912191841397458
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1409762656055830618}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b0390790d09691e4b8fab4545455a092, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 

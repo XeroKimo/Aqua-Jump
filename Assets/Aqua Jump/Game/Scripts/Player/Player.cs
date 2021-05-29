@@ -21,6 +21,8 @@ public class Player : MonoBehaviour
     public bool canJump => m_jumpCount > 0;
     public float colliderRadius => m_collider.radius;
 
+    public Vector2 velocity => m_rigidBody.velocity;
+
     private void Awake()
     {
         m_rigidBody = GetComponent<Rigidbody2D>();
