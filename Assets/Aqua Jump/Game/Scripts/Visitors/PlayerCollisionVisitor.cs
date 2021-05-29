@@ -32,6 +32,8 @@ public class PlayerCollisionVisitor : PlatformCollisionVisitor
     public override void Resolve(BouncePlatform platform)
     {
         CommonResolution(platform);
+        m_player.ResetVelocity();
+        m_player.Jump(m_player.launchDirection, m_player.launchPower);
     }
 
     public override void Resolve(MovingPlatform platform)

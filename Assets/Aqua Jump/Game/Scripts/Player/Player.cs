@@ -55,6 +55,11 @@ public class Player : MonoBehaviour
         m_jumpCount += 1;
     }
 
+    public void ResetVelocity()
+    {
+        m_rigidBody.velocity = Vector2.zero;
+    }
+
     public PlayerCollisionVisitor CreateVisitor(GameManager gameManager)
     {
         return new PlayerCollisionVisitor(this, gameManager);
