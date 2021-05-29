@@ -40,15 +40,10 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    private void Update()
-    {
-        UpdatePlatformCollision();
-    }
-
     private void FixedUpdate()
     {
         WrapPlayer();
+        UpdatePlatformCollision();
     }
 
     private void OnDrawGizmos()
@@ -64,7 +59,6 @@ public class GameManager : MonoBehaviour
 
     private void OnDrag(PlayerController controller)
     {
-        Debug.Log("Dragging");
         m_debugStartPos = m_camera.ScreenToWorldPoint(controller.startPos);
         m_debugCurrentPos = m_camera.ScreenToWorldPoint(controller.currentPos);
 
@@ -122,8 +116,10 @@ public class GameManager : MonoBehaviour
     {
         foreach(BasePlatform platform in m_platforms)
         {
-            if(platform.transform.position.y < m_aqua.transform.position.y)
+            if(platform.transform.position.y + platform.colliderBounds.extents.y + m_aqua.colliderRadius < m_aqua.transform.position.y)
+            {
                 platform.EnableCollisions();
+            }
         }
     }
 }
