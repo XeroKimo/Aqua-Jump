@@ -32,14 +32,33 @@ public class GameManager : MonoBehaviour
     }
 
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        
+    }
+
+    private void FixedUpdate()
+    {
+        WrapPlayer();
+    }
+
+    private void WrapPlayer()
+    {
+        Vector2 horizontalWrapBounds = GetHorizontalWrappingBounds();
+
+        if(m_aqua.transform.position.x < horizontalWrapBounds.x)
+        {
+            m_aqua.Teleport(new Vector2(horizontalWrapBounds.y, m_aqua.transform.position.y));
+        }
+        else if(m_aqua.transform.position.x > horizontalWrapBounds.y)
+        {
+            m_aqua.Teleport(new Vector2(horizontalWrapBounds.x, m_aqua.transform.position.y));
+        }
+
     }
 
     private void OnDrag(PlayerController controller)
@@ -65,5 +84,11 @@ public class GameManager : MonoBehaviour
         Gizmos.color = Color.green;
 
         Gizmos.DrawWireCube(m_camera.transform.position, new Vector2(m_camera.orthographicSize * 2 * m_camera.aspect * m_wrappingBoundsExtent, m_camera.orthographicSize * 2));
+    }
+
+    private Vector2 GetHorizontalWrappingBounds()
+    {
+        float width = m_camera.orthographicSize * 2 * m_camera.aspect * m_wrappingBoundsExtent;
+        return new Vector2(m_camera.transform.position.x - width / 2, m_camera.transform.position.x + width / 2);
     }
 }

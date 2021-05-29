@@ -40,6 +40,11 @@ public class Player : MonoBehaviour
         m_rigidBody.AddForce(launchDirection * launchPower, ForceMode2D.Impulse);
     }
 
+    public void Teleport(Vector2 position)
+    {
+        m_rigidBody.position = position;
+    }
+
     public PlayerCollisionVisitor CreateVisitor(GameManager gameManager)
     {
         return new PlayerCollisionVisitor(this, gameManager);
