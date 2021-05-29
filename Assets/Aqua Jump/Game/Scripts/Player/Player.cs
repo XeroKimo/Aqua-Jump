@@ -15,4 +15,9 @@ public class Player : MonoBehaviour
     {
         
     }
+
+    public PlayerCollisionVisitor CreateVisitor(GameManager gameManager)
+    {
+        return new PlayerCollisionVisitor(this, gameManager);
+    }
 }
