@@ -43,6 +43,7 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
+        UpdatePlatformCollision();
     }
 
     private void FixedUpdate()
@@ -85,7 +86,8 @@ public class GameManager : MonoBehaviour
     private void AddPlatform(BasePlatform platform)
     {
         m_platforms.Add(platform);
-        platform.onCollisionEnter += Platform_onCollisionEnter; 
+        platform.onCollisionEnter += Platform_onCollisionEnter;
+        platform.DisableCollisions();
     }
 
     private void Platform_onCollisionEnter(Collision2D arg1, BasePlatform arg2)
@@ -116,4 +118,12 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    private void UpdatePlatformCollision()
+    {
+        foreach(BasePlatform platform in m_platforms)
+        {
+            if(platform.transform.position.y < m_aqua.transform.position.y)
+                platform.EnableCollisions();
+        }
+    }
 }
