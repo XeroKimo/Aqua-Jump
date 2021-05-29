@@ -69,7 +69,8 @@ public class GameManager : MonoBehaviour
 
         if(controller.state == PlayerController.State.Ended)
         {
-            m_aqua.Launch((m_debugStartPos - m_debugCurrentPos).normalized, (m_debugStartPos - m_debugCurrentPos).magnitude);
+            if(m_aqua.canJump)
+                m_aqua.Jump((m_debugStartPos - m_debugCurrentPos).normalized, (m_debugStartPos - m_debugCurrentPos).magnitude);
             m_debugStartPos = Vector2.zero;
             m_debugCurrentPos = Vector2.zero;
         }

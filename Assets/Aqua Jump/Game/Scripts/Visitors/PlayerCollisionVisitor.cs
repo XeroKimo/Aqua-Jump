@@ -16,26 +16,32 @@ public class PlayerCollisionVisitor : PlatformCollisionVisitor
 
     public override void Resolve(StationaryPlatform platform)
     {
-        Debug.Log($"{platform.GetType()} Collided with player");
+        CommonResolution(platform);
     }
 
     public override void Resolve(GroundPlatform platform)
     {
-        Debug.Log($"{platform.GetType()} Collided with player");
+        CommonResolution(platform);
     }
 
     public override void Resolve(FragilePlatform platform)
     {
-        Debug.Log($"{platform.GetType()} Collided with player");
+        CommonResolution(platform);
     }
 
     public override void Resolve(BouncePlatform platform)
     {
-        Debug.Log($"{platform.GetType()} Collided with player");
+        CommonResolution(platform);
     }
 
     public override void Resolve(MovingPlatform platform)
     {
+        CommonResolution(platform);
+    }
+
+    private void CommonResolution(BasePlatform platform)
+    {
         Debug.Log($"{platform.GetType()} Collided with player");
+        m_player.ResetJumpCount();
     }
 }
