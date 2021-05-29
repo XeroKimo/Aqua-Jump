@@ -34,6 +34,10 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     private void Start()
     {
+        foreach(BasePlatform platform in FindObjectsOfType<BasePlatform>())
+        {
+            AddPlatform(platform);
+        }
     }
 
     // Update is called once per frame
@@ -46,19 +50,15 @@ public class GameManager : MonoBehaviour
         WrapPlayer();
     }
 
-    private void WrapPlayer()
+    private void OnDrawGizmos()
     {
-        Vector2 horizontalWrapBounds = GetHorizontalWrappingBounds();
+        Gizmos.color = Color.yellow;
 
-        if(m_aqua.transform.position.x < horizontalWrapBounds.x)
-        {
-            m_aqua.Teleport(new Vector2(horizontalWrapBounds.y, m_aqua.transform.position.y));
-        }
-        else if(m_aqua.transform.position.x > horizontalWrapBounds.y)
-        {
-            m_aqua.Teleport(new Vector2(horizontalWrapBounds.x, m_aqua.transform.position.y));
-        }
+        Gizmos.DrawLine(m_debugStartPos, m_debugCurrentPos);
 
+        Gizmos.color = Color.green;
+
+        Gizmos.DrawWireCube(m_camera.transform.position, new Vector2(m_camera.orthographicSize * 2 * m_camera.aspect * m_wrappingBoundsExtent, m_camera.orthographicSize * 2));
     }
 
     private void OnDrag(PlayerController controller)
@@ -75,15 +75,24 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void OnDrawGizmos()
+    public void DestroyPlatform(BasePlatform platform)
     {
-        Gizmos.color = Color.yellow;
+        m_platforms.Remove(platform);
+        Destroy(platform.gameObject);
+    }
 
-        Gizmos.DrawLine(m_debugStartPos, m_debugCurrentPos);
+    private void AddPlatform(BasePlatform platform)
+    {
+        m_platforms.Add(platform);
+        platform.onCollisionEnter += Platform_onCollisionEnter; 
+    }
 
-        Gizmos.color = Color.green;
-
-        Gizmos.DrawWireCube(m_camera.transform.position, new Vector2(m_camera.orthographicSize * 2 * m_camera.aspect * m_wrappingBoundsExtent, m_camera.orthographicSize * 2));
+    private void Platform_onCollisionEnter(Collision2D arg1, BasePlatform arg2)
+    {
+        if(arg1.gameObject == m_aqua.gameObject)
+        {
+            arg2.CollisionVisit(m_aqua.CreateVisitor(this));
+        }
     }
 
     private Vector2 GetHorizontalWrappingBounds()
@@ -91,4 +100,19 @@ public class GameManager : MonoBehaviour
         float width = m_camera.orthographicSize * 2 * m_camera.aspect * m_wrappingBoundsExtent;
         return new Vector2(m_camera.transform.position.x - width / 2, m_camera.transform.position.x + width / 2);
     }
+
+    private void WrapPlayer()
+    {
+        Vector2 horizontalWrapBounds = GetHorizontalWrappingBounds();
+
+        if(m_aqua.transform.position.x < horizontalWrapBounds.x)
+        {
+            m_aqua.Teleport(new Vector2(horizontalWrapBounds.y, m_aqua.transform.position.y));
+        }
+        else if(m_aqua.transform.position.x > horizontalWrapBounds.y)
+        {
+            m_aqua.Teleport(new Vector2(horizontalWrapBounds.x, m_aqua.transform.position.y));
+        }
+    }
+
 }
