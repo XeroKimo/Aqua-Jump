@@ -20,6 +20,8 @@ public class GameManager : MonoBehaviour
 
     public LineRenderer dragVisualizer;
 
+    public float maxDragVisualizerDistance = 3;
+
     private void OnEnable()
     {
         m_controller.onDrag += OnDrag;
@@ -62,10 +64,13 @@ public class GameManager : MonoBehaviour
         Vector2 currentPos = m_camera.ScreenToWorldPoint(controller.currentPos);
         Vector2 deltaPos = startPos - currentPos;
         Vector2 direction = deltaPos.normalized;
+        direction = m_aqua.ClampDirection(direction);
         float magnitude = deltaPos.magnitude;
 
+        float dragVisualizerDistance = Mathf.Lerp(0, maxDragVisualizerDistance, magnitude * m_aqua.powerMultiplier / m_aqua.maxPower);
+
         dragVisualizer.SetPosition(0, m_aqua.transform.position);
-        dragVisualizer.SetPosition(1, (Vector2)m_aqua.transform.position + direction * magnitude);
+        dragVisualizer.SetPosition(1, (Vector2)m_aqua.transform.position + direction * dragVisualizerDistance);
 
         if(controller.state == PlayerController.State.Ended)
         {

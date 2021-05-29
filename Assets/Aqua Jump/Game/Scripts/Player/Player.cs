@@ -9,8 +9,15 @@ public class Player : MonoBehaviour
     private Rigidbody2D m_rigidBody;
     private CircleCollider2D m_collider;
 
+    [SerializeField]
+    private float m_jumpAngleClamp;
+    private float m_jumpAngleDotClamp;
+    private Vector3 m_jumpMinAngle;
+    private Vector3 m_jumpMaxAngle;
+
     private byte m_jumpCount = 0;
     private byte m_maxJumpCount = 1;
+
 
     public float powerMultiplier = 2.0f;
     public float maxPower = 10.0f;
@@ -29,18 +36,35 @@ public class Player : MonoBehaviour
         m_rigidBody.constraints = RigidbodyConstraints2D.FreezeRotation;
 
         m_collider = GetComponent<CircleCollider2D>();
+
+        m_jumpAngleDotClamp = Vector3.Dot(Vector3.up, Quaternion.Euler(0, 0, m_jumpAngleClamp) * Vector3.up);
+        m_jumpMinAngle = Quaternion.Euler(0, 0, -m_jumpAngleClamp) * Vector3.up;
+        m_jumpMaxAngle = Quaternion.Euler(0, 0, m_jumpAngleClamp) * Vector3.up;
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+
+        Quaternion direction = Quaternion.Euler(0, 0, m_jumpAngleClamp);
+        Quaternion direction2 = Quaternion.Euler(0, 0, -m_jumpAngleClamp);
+        Vector3 axis = direction * Vector3.up;
+        Vector3 axis2 = direction2 * Vector3.up;
+
+        Gizmos.DrawLine(transform.position, transform.position + axis * 5);
+        Gizmos.DrawLine(transform.position, transform.position + axis2 * 5);
     }
 
     public void Jump(Vector2 direction, float power)
@@ -68,6 +92,18 @@ public class Player : MonoBehaviour
     public void ResetVelocity()
     {
         m_rigidBody.velocity = Vector2.zero;
+    }
+
+    public Vector3 ClampDirection(Vector3 value)
+    {
+        if(Vector3.Dot(value, Vector3.up) < m_jumpAngleDotClamp)
+        {
+            if(Vector3.Dot(value, m_jumpMinAngle) > Vector3.Dot(value, m_jumpMaxAngle))
+                return m_jumpMinAngle;
+            else
+                return m_jumpMaxAngle;
+        }
+        return value;
     }
 
     public PlayerCollisionVisitor CreateVisitor(GameManager gameManager)
