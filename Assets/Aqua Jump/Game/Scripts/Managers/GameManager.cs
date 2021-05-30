@@ -11,12 +11,14 @@ public class GameManager : MonoBehaviour
     private PlayerController m_controller;
 
     [SerializeField]
-    private Camera m_camera;
+    private CameraController m_camera;
 
     [SerializeField]
     private float m_wrappingBoundsExtent = 1.3f;
 
     private List<BasePlatform> m_platforms = new List<BasePlatform>();
+
+    private BasePlatform m_previousPlatform;
 
     public LineRenderer dragVisualizer;
 
@@ -41,6 +43,7 @@ public class GameManager : MonoBehaviour
         }
 
         dragVisualizer.enabled = false;
+        m_camera.trackedObject = m_aqua.transform;
     }
 
     private void FixedUpdate()
@@ -53,15 +56,19 @@ public class GameManager : MonoBehaviour
     {
         Gizmos.color = Color.green;
 
-        Gizmos.DrawWireCube(m_camera.transform.position, new Vector2(m_camera.orthographicSize * 2 * m_camera.aspect * m_wrappingBoundsExtent, m_camera.orthographicSize * 2));
+        Gizmos.DrawWireCube(m_camera.camera.transform.position, new Vector2(m_camera.camera.orthographicSize * 2 * m_camera.camera.aspect * m_wrappingBoundsExtent, m_camera.camera.orthographicSize * 2));
+
+        Gizmos.color = Color.red;
+
+        Gizmos.DrawSphere(m_camera.bounds.min, 1);
     }
 
     private void OnDrag(PlayerController controller)
     {
         dragVisualizer.enabled = m_aqua.canJump;
 
-        Vector2 startPos = m_camera.ScreenToWorldPoint(controller.startPos);
-        Vector2 currentPos = m_camera.ScreenToWorldPoint(controller.currentPos);
+        Vector2 startPos = m_camera.camera.ScreenToWorldPoint(controller.startPos);
+        Vector2 currentPos = m_camera.camera.ScreenToWorldPoint(controller.currentPos);
         Vector2 deltaPos = startPos - currentPos;
         Vector2 direction = deltaPos.normalized;
         direction = m_aqua.ClampDirection(direction);
@@ -100,13 +107,15 @@ public class GameManager : MonoBehaviour
         if(arg1.gameObject == m_aqua.gameObject)
         {
             arg2.CollisionVisit(m_aqua.CreateVisitor(this));
+            m_previousPlatform = arg2;
+            RemovePlatforms();
         }
     }
 
     private Vector2 GetHorizontalWrappingBounds()
     {
-        float width = m_camera.orthographicSize * 2 * m_camera.aspect * m_wrappingBoundsExtent;
-        return new Vector2(m_camera.transform.position.x - width / 2, m_camera.transform.position.x + width / 2);
+        float width = m_camera.bounds.width;
+        return new Vector2(m_camera.camera.transform.position.x - width / 2, m_camera.camera.transform.position.x + width / 2);
     }
 
     private void WrapPlayer()
@@ -132,6 +141,20 @@ public class GameManager : MonoBehaviour
                 platform.EnableCollisions();
             else
                 platform.DisableCollisions();
+        }
+    }
+
+    private void RemovePlatforms()
+    {
+        Rect cameraBounds = m_camera.bounds;
+        foreach(BasePlatform platform in m_platforms)
+        {
+            if(platform.transform.position.y < cameraBounds.yMin)
+            {
+                if(platform != m_previousPlatform)
+                    DestroyPlatform(platform);
+            }
+
         }
     }
 }
