@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -17,12 +18,12 @@ public class GameManager : MonoBehaviour
     private float m_wrappingBoundsExtent = 1.3f;
 
     private List<BasePlatform> m_platforms = new List<BasePlatform>();
-
     private BasePlatform m_previousPlatform;
 
     public LineRenderer dragVisualizer;
-
     public float maxDragVisualizerDistance = 3;
+
+
 
     private void OnEnable()
     {
@@ -43,13 +44,14 @@ public class GameManager : MonoBehaviour
         }
 
         dragVisualizer.enabled = false;
-        m_camera.trackedObject = m_aqua.transform;
+        m_camera.onLerpFinished += OnLerpFinished;
     }
 
     private void FixedUpdate()
     {
         WrapPlayer();
         UpdatePlatformCollision();
+        DetectFall();
     }
 
     private void OnDrawGizmos()
@@ -61,6 +63,17 @@ public class GameManager : MonoBehaviour
         Gizmos.color = Color.red;
 
         Gizmos.DrawSphere(m_camera.bounds.min, 1);
+    }
+
+    public void DestroyPlatform(BasePlatform platform)
+    {
+        m_platforms.Remove(platform);
+        Destroy(platform.gameObject);
+    }
+
+    public void RestartGame()
+    {
+        SceneManager.LoadScene("Game");
     }
 
     private void OnDrag(PlayerController controller)
@@ -89,10 +102,9 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void DestroyPlatform(BasePlatform platform)
+    private void OnLerpFinished()
     {
-        m_platforms.Remove(platform);
-        Destroy(platform.gameObject);
+        RemovePlatforms();
     }
 
     private void AddPlatform(BasePlatform platform)
@@ -107,8 +119,14 @@ public class GameManager : MonoBehaviour
         if(arg1.gameObject == m_aqua.gameObject)
         {
             arg2.CollisionVisit(m_aqua.CreateVisitor(this));
+
+            if(m_previousPlatform != null)
+            {
+                if(m_previousPlatform != arg2 && arg2.transform.position.y > m_previousPlatform.transform.position.y)
+                    m_camera.LerpPosition(new Vector3(0, m_aqua.transform.position.y + 3, -10), 1);
+            }
+
             m_previousPlatform = arg2;
-            RemovePlatforms();
         }
     }
 
@@ -144,10 +162,20 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    private void DetectFall()
+    {
+        if(m_aqua.transform.position.y < m_camera.bounds.yMin)
+        {
+            RestartGame();
+        }
+    }
+
     private void RemovePlatforms()
     {
         Rect cameraBounds = m_camera.bounds;
-        foreach(BasePlatform platform in m_platforms)
+        List<BasePlatform> platformCopy = new List<BasePlatform>(m_platforms);
+
+        foreach(BasePlatform platform in platformCopy)
         {
             if(platform.transform.position.y < cameraBounds.yMin)
             {
