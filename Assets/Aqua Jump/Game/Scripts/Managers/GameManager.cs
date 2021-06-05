@@ -154,7 +154,7 @@ public class GameManager : MonoBehaviour
     {
         foreach(BasePlatform platform in m_platforms)
         {
-            float minAquaHeight = platform.transform.position.y + platform.colliderBounds.extents.y + m_aqua.colliderRadius / 2;
+            float minAquaHeight = platform.transform.position.y + platform.colliderBounds.extents.y + m_aqua.colliderHeight / 2;
             if(minAquaHeight < m_aqua.transform.position.y && m_aqua.velocity.y < 0)
                 platform.EnableCollisions();
             else

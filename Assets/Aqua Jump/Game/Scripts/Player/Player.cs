@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
-[RequireComponent(typeof(CircleCollider2D))]
+[RequireComponent(typeof(CapsuleCollider2D))]
 public class Player : MonoBehaviour
 {
     private Rigidbody2D m_rigidBody;
-    private CircleCollider2D m_collider;
+    private CapsuleCollider2D m_collider;
 
     [SerializeField]
     private float m_jumpAngleClamp;
@@ -26,7 +26,7 @@ public class Player : MonoBehaviour
     public float launchPower { get; private set; }
 
     public bool canJump => m_jumpCount > 0;
-    public float colliderRadius => m_collider.radius;
+    public float colliderHeight => m_collider.bounds.size.y;
 
     public Vector2 velocity => m_rigidBody.velocity;
 
@@ -35,7 +35,7 @@ public class Player : MonoBehaviour
         m_rigidBody = GetComponent<Rigidbody2D>();
         m_rigidBody.constraints = RigidbodyConstraints2D.FreezeRotation;
 
-        m_collider = GetComponent<CircleCollider2D>();
+        m_collider = GetComponent<CapsuleCollider2D>();
 
         m_jumpAngleDotClamp = Vector3.Dot(Vector3.up, Quaternion.Euler(0, 0, m_jumpAngleClamp) * Vector3.up);
         m_jumpMinAngle = Quaternion.Euler(0, 0, -m_jumpAngleClamp) * Vector3.up;
