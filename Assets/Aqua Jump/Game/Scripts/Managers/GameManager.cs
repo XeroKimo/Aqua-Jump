@@ -17,13 +17,15 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private float m_wrappingBoundsExtent = 1.3f;
 
-    private List<BasePlatform> m_platforms = new List<BasePlatform>();
+    [SerializeField]
+    private PlatformManager m_platformManager;
+
+    private float m_highestHeight = 0;
+
     private BasePlatform m_previousPlatform;
 
     public LineRenderer dragVisualizer;
     public float maxDragVisualizerDistance = 3;
-
-
 
     private void OnEnable()
     {
@@ -38,13 +40,11 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     private void Start()
     {
-        foreach(BasePlatform platform in FindObjectsOfType<BasePlatform>())
-        {
-            AddPlatform(platform);
-        }
-
         dragVisualizer.enabled = false;
         m_camera.onLerpFinished += OnLerpFinished;
+
+        m_platformManager.onCollisionEnter += Platform_onCollisionEnter;
+        m_platformManager.CreateRandomPlatforms(m_highestHeight);
     }
 
     private void FixedUpdate()
@@ -67,7 +67,7 @@ public class GameManager : MonoBehaviour
 
     public void DestroyPlatform(BasePlatform platform)
     {
-        m_platforms.Remove(platform);
+        m_platformManager.platforms.Remove(platform);
         Destroy(platform.gameObject);
     }
 
@@ -107,13 +107,6 @@ public class GameManager : MonoBehaviour
         RemovePlatforms();
     }
 
-    private void AddPlatform(BasePlatform platform)
-    {
-        m_platforms.Add(platform);
-        platform.onCollisionEnter += Platform_onCollisionEnter;
-        platform.DisableCollisions();
-    }
-
     private void Platform_onCollisionEnter(Collision2D arg1, BasePlatform arg2)
     {
         if(arg1.gameObject == m_aqua.gameObject)
@@ -124,6 +117,12 @@ public class GameManager : MonoBehaviour
             {
                 if(m_previousPlatform != arg2 && arg2.transform.position.y > m_previousPlatform.transform.position.y)
                     m_camera.LerpPosition(new Vector3(0, m_aqua.transform.position.y + 3, -10), 1);
+            }
+
+            if(arg2.transform.position.y > m_highestHeight)
+            {
+                m_highestHeight = arg2.transform.position.y;
+                m_platformManager.CreateRandomPlatforms(m_highestHeight);
             }
 
             m_previousPlatform = arg2;
@@ -152,7 +151,7 @@ public class GameManager : MonoBehaviour
 
     private void UpdatePlatformCollision()
     {
-        foreach(BasePlatform platform in m_platforms)
+        foreach(BasePlatform platform in m_platformManager.platforms)
         {
             float minAquaHeight = platform.transform.position.y + platform.colliderBounds.extents.y + m_aqua.colliderHeight / 2;
             if(minAquaHeight < m_aqua.transform.position.y && m_aqua.velocity.y < 0)
@@ -173,16 +172,14 @@ public class GameManager : MonoBehaviour
     private void RemovePlatforms()
     {
         Rect cameraBounds = m_camera.bounds;
-        List<BasePlatform> platformCopy = new List<BasePlatform>(m_platforms);
+        List<BasePlatform> platformCopy = new List<BasePlatform>(m_platformManager.platforms);
 
         foreach(BasePlatform platform in platformCopy)
         {
             if(platform.transform.position.y < cameraBounds.yMin)
             {
-                if(platform != m_previousPlatform)
-                    DestroyPlatform(platform);
+                DestroyPlatform(platform);
             }
-
         }
     }
 }

@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2fede4e69594cea4ea9879194da007cc, type: 3}
+  m_Name: Level 1
+  m_EditorClassIdentifier: 
+  platforms:
+  - platform: {fileID: 6126333858057482808, guid: f17c79501dc5b6347aa71cdcf567fad4,
+      type: 3}
+    chance: 0.8
+  - platform: {fileID: 385421799227256586, guid: 4f6d432e7ba9e0149bc14f95a048866e,
+      type: 3}
+    chance: 0.2
+  spawnCount: 5
+  heightRange: {x: 0, y: 0}

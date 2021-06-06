@@ -67,6 +67,7 @@
     <Compile Include="Assets\Aqua Jump\Game\Scripts\Controller\CameraController.cs" />
     <Compile Include="Assets\Aqua Jump\Game\Scripts\Controller\PlayerController.cs" />
     <Compile Include="Assets\Aqua Jump\Game\Scripts\Managers\GameManager.cs" />
+    <Compile Include="Assets\Aqua Jump\Game\Scripts\Managers\PlatformManager.cs" />
     <Compile Include="Assets\Aqua Jump\Game\Scripts\Platforms\BasePlatform.cs" />
     <Compile Include="Assets\Aqua Jump\Game\Scripts\Platforms\BouncePlatform.cs" />
     <Compile Include="Assets\Aqua Jump\Game\Scripts\Platforms\FragilePlatform.cs" />
@@ -74,6 +75,7 @@
     <Compile Include="Assets\Aqua Jump\Game\Scripts\Platforms\MovingPlatform.cs" />
     <Compile Include="Assets\Aqua Jump\Game\Scripts\Platforms\StationaryPlatform.cs" />
     <Compile Include="Assets\Aqua Jump\Game\Scripts\Player\Player.cs" />
+    <Compile Include="Assets\Aqua Jump\Game\Scripts\Scriptable Objects\PlatformChances.cs" />
     <Compile Include="Assets\Aqua Jump\Game\Scripts\Visitors\PlatformCollisionVisitor.cs" />
     <Compile Include="Assets\Aqua Jump\Game\Scripts\Visitors\PlayerCollisionVisitor.cs" />
     <Compile Include="Assets\Aqua Jump\Start Up\Scripts\InitializeGame.cs" />
