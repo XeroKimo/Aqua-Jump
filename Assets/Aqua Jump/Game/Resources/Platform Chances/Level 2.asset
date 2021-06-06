@@ -10,14 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2fede4e69594cea4ea9879194da007cc, type: 3}
-  m_Name: Level 1
+  m_Name: Level 2
   m_EditorClassIdentifier: 
   platforms:
   - platform: {fileID: 6987114320757515076, guid: bbe584e511d5a9e478060d0886daeba6,
       type: 3}
-    chance: 0.2
+    chance: 0.5
   - platform: {fileID: 6126333858057482808, guid: f17c79501dc5b6347aa71cdcf567fad4,
       type: 3}
-    chance: 0.8
-  spawnCount: 5
-  heightRange: {x: 0, y: 20}
+    chance: 0.3
+  - platform: {fileID: -143956997671819956, guid: ffefefcebb82a7b46ab26fcccdc9e921,
+      type: 3}
+    chance: 0.3
+  spawnCount: 2
+  heightRange: {x: 20, y: 50}

@@ -339,13 +339,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_chances:
   - {fileID: 11400000, guid: f9c8ed0054455414eb906b24d374605e, type: 2}
+  - {fileID: 11400000, guid: 86db39938e5e8b44d83da0b26af7f39f, type: 2}
   m_startingPlatform: {fileID: 1409762656530877562}
-  m_platformSpawnBounds:
-    serializedVersion: 2
-    x: -3.25
-    y: 0
-    width: 6.5
-    height: 10
   platforms: []
 --- !u!4 &603186212 stripped
 Transform:
@@ -470,7 +465,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 774451282}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.521, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1385401572}

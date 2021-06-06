@@ -17,8 +17,9 @@ public class PlatformManager : MonoBehaviour
 
     public event Action<Collision2D, BasePlatform> onCollisionEnter;
 
-    // Start is called before the first frame update
-    private void Start()
+    public GroundPlatform startingPlatform => m_startingPlatform;
+
+    public void Initialize()
     {
         platforms.Add(m_startingPlatform);
         m_startingPlatform.onCollisionEnter += PlatformCollisionEnter;
@@ -26,7 +27,7 @@ public class PlatformManager : MonoBehaviour
 
     public void CreateRandomPlatforms(Rect bounds, float heightOffset)
     {
-        PlatformChances chances = GetRandomPlatformChance(heightOffset);
+        PlatformChances chances = GetRandomPlatformChance(bounds.center.y + heightOffset);
 
         int totalPlatformsToSpawn = chances.spawnCount;
 
@@ -39,7 +40,7 @@ public class PlatformManager : MonoBehaviour
         const int maxFailedAttempts = 100;
         int failedAttempts = 0;
 
-        for(int i = 0; i < totalPlatformsToSpawn; i++)
+        for(int i = 0; i < totalPlatformsToSpawn;)
         {
             if(failedAttempts >= maxFailedAttempts)
                 break;
@@ -49,11 +50,19 @@ public class PlatformManager : MonoBehaviour
             Vector2 randomPosition = Vector2.zero;
 
             randomPosition.x += UnityEngine.Random.Range(minPosition.x, maxPosition.x);
-            randomPosition.y += UnityEngine.Random.Range(minPosition.y, maxPosition.y);
+
+            if(i < 2)
+                randomPosition.y = platforms.Max(platform => platform.transform.position.y) + bounds.height * 0.4f;
+            else
+                randomPosition.y += UnityEngine.Random.Range(minPosition.y, maxPosition.y);
 
             if(!CreatePlatform(prefab, randomPosition))
             {
                 failedAttempts++;
+            }
+            else
+            {
+                i++;
             }
 
         }
@@ -70,10 +79,10 @@ public class PlatformManager : MonoBehaviour
 
         if(platforms.Any(comp =>
         {
-            return comp.transform.position.x < platform.transform.position.x + platform.collider.size.x &&
-                platform.transform.position.x < comp.transform.position.x + comp.collider.size.x &&
-                comp.transform.position.y < platform.transform.position.y + platform.collider.size.y &&
-                platform.transform.position.y < comp.transform.position.y + comp.collider.size.y;
+            return comp.transform.position.x < platform.transform.position.x + platform.collider.size.x * platform.transform.localScale.x &&
+                platform.transform.position.x < comp.transform.position.x + comp.collider.size.x * comp.transform.localScale.x &&
+                comp.transform.position.y < platform.transform.position.y + platform.collider.size.y * platform.transform.localScale.y &&
+                platform.transform.position.y < comp.transform.position.y + comp.collider.size.y * comp.transform.localScale.y;
         }))
         {
             Destroy(platform.gameObject);
@@ -89,9 +98,17 @@ public class PlatformManager : MonoBehaviour
 
     private PlatformChances GetRandomPlatformChance(float height)
     {
-        PlatformChances chances = null;
+        List<PlatformChances> chances = m_chances.Where(val => height >= val.heightRange.x  && height <= val.heightRange.y).ToList();
 
-        chances = m_chances[0];
-        return chances;
+        if(chances.Count == 0)
+        {
+            float maxMinHeight = m_chances.Max(val => val.heightRange.x);
+            chances = m_chances.Where(val => val.heightRange.x >= maxMinHeight).ToList();
+        }
+        if(chances.Count == 0)
+            chances = m_chances;
+
+
+        return chances[UnityEngine.Random.Range(0, chances.Count)];
     }
 }
