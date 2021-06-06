@@ -19,7 +19,7 @@ public class PlatformChances : ScriptableObject
 
     public BasePlatform GetRandomPlatform()
     {
-        float value = UnityEngine.Random.Range(0, 1);
+        float value = UnityEngine.Random.Range(0.0f, 1.0f);
         foreach(Chances chance in platforms)
         {
             value -= chance.chance;

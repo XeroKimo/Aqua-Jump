@@ -21,6 +21,7 @@ public class GameManager : MonoBehaviour
     private PlatformManager m_platformManager;
 
     private float m_highestHeight = 0;
+    private float m_minimumNextPlatformHeight = 0;
 
     private BasePlatform m_previousPlatform;
 
@@ -44,7 +45,10 @@ public class GameManager : MonoBehaviour
         m_camera.onLerpFinished += OnLerpFinished;
 
         m_platformManager.onCollisionEnter += Platform_onCollisionEnter;
-        m_platformManager.CreateRandomPlatforms(m_highestHeight);
+
+        m_platformManager.CreateRandomPlatforms(m_camera.bounds, 0);
+        m_platformManager.CreateRandomPlatforms(m_camera.bounds, m_camera.bounds.height);
+        m_minimumNextPlatformHeight = m_camera.bounds.height;
     }
 
     private void FixedUpdate()
@@ -52,6 +56,15 @@ public class GameManager : MonoBehaviour
         WrapPlayer();
         UpdatePlatformCollision();
         DetectFall();
+
+        m_highestHeight = m_aqua.transform.position.y;
+
+        while(m_minimumNextPlatformHeight < m_highestHeight)
+        {
+            m_platformManager.CreateRandomPlatforms(m_camera.bounds, m_camera.bounds.height);
+            m_minimumNextPlatformHeight += m_camera.bounds.height;
+        }
+        
     }
 
     private void OnDrawGizmos()
@@ -119,12 +132,6 @@ public class GameManager : MonoBehaviour
                     m_camera.LerpPosition(new Vector3(0, m_aqua.transform.position.y + 3, -10), 1);
             }
 
-            if(arg2.transform.position.y > m_highestHeight)
-            {
-                m_highestHeight = arg2.transform.position.y;
-                m_platformManager.CreateRandomPlatforms(m_highestHeight);
-            }
-
             m_previousPlatform = arg2;
         }
     }
@@ -153,7 +160,7 @@ public class GameManager : MonoBehaviour
     {
         foreach(BasePlatform platform in m_platformManager.platforms)
         {
-            float minAquaHeight = platform.transform.position.y + platform.colliderBounds.extents.y + m_aqua.colliderHeight / 2;
+            float minAquaHeight = platform.transform.position.y + platform.collider.bounds.extents.y + m_aqua.colliderHeight / 2;
             if(minAquaHeight < m_aqua.transform.position.y && m_aqua.velocity.y < 0)
                 platform.EnableCollisions();
             else

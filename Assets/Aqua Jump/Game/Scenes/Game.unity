@@ -343,9 +343,9 @@ MonoBehaviour:
   m_platformSpawnBounds:
     serializedVersion: 2
     x: -3.25
-    y: 2
+    y: 0
     width: 6.5
-    height: 15
+    height: 10
   platforms: []
 --- !u!4 &603186212 stripped
 Transform:

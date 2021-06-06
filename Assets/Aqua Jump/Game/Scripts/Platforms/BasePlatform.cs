@@ -12,7 +12,7 @@ public abstract class BasePlatform : MonoBehaviour
     private Rigidbody2D m_rigidBody;
     private BoxCollider2D m_collider;
 
-    public Bounds colliderBounds => m_collider.bounds;
+    public new BoxCollider2D collider => m_collider;
 
     void Awake()
     {

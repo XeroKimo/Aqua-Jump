@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: Level 1
   m_EditorClassIdentifier: 
   platforms:
+  - platform: {fileID: 6987114320757515076, guid: bbe584e511d5a9e478060d0886daeba6,
+      type: 3}
+    chance: 0.2
   - platform: {fileID: 6126333858057482808, guid: f17c79501dc5b6347aa71cdcf567fad4,
       type: 3}
     chance: 0.8
-  - platform: {fileID: 385421799227256586, guid: 4f6d432e7ba9e0149bc14f95a048866e,
-      type: 3}
-    chance: 0.2
   spawnCount: 5
   heightRange: {x: 0, y: 0}
