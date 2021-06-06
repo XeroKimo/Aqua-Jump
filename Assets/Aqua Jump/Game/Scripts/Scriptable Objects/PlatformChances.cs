@@ -14,6 +14,7 @@ public class PlatformChances : ScriptableObject
     }
 
     public List<Chances> platforms;
+    [Range(2, 10)]
     public int spawnCount;
     public Vector2 heightRange;
 

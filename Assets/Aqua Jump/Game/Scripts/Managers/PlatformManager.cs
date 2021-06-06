@@ -17,8 +17,9 @@ public class PlatformManager : MonoBehaviour
 
     public event Action<Collision2D, BasePlatform> onCollisionEnter;
 
-    // Start is called before the first frame update
-    private void Start()
+    public GroundPlatform startingPlatform => m_startingPlatform;
+
+    public void Initialize()
     {
         platforms.Add(m_startingPlatform);
         m_startingPlatform.onCollisionEnter += PlatformCollisionEnter;
@@ -39,7 +40,7 @@ public class PlatformManager : MonoBehaviour
         const int maxFailedAttempts = 100;
         int failedAttempts = 0;
 
-        for(int i = 0; i < totalPlatformsToSpawn; i++)
+        for(int i = 0; i < totalPlatformsToSpawn;)
         {
             if(failedAttempts >= maxFailedAttempts)
                 break;
@@ -49,11 +50,19 @@ public class PlatformManager : MonoBehaviour
             Vector2 randomPosition = Vector2.zero;
 
             randomPosition.x += UnityEngine.Random.Range(minPosition.x, maxPosition.x);
-            randomPosition.y += UnityEngine.Random.Range(minPosition.y, maxPosition.y);
+
+            if(i < 2)
+                randomPosition.y = platforms.Max(platform => platform.transform.position.y) + bounds.height * 0.4f;
+            else
+                randomPosition.y += UnityEngine.Random.Range(minPosition.y, maxPosition.y);
 
             if(!CreatePlatform(prefab, randomPosition))
             {
                 failedAttempts++;
+            }
+            else
+            {
+                i++;
             }
 
         }
