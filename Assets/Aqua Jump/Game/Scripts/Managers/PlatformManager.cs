@@ -25,45 +25,30 @@ public class PlatformManager : MonoBehaviour
         m_startingPlatform.onCollisionEnter += PlatformCollisionEnter;
     }
 
-    public void CreateRandomPlatforms(Rect bounds, float heightOffset)
+    public void CreateRandomPlatforms(Rect bounds)
     {
-        PlatformChances chances = GetRandomPlatformChance(bounds.center.y + heightOffset);
+        PlatformChances chances = GetRandomPlatformChance(bounds.center.y);
 
-        int totalPlatformsToSpawn = chances.spawnCount;
+        float height = bounds.yMin;
 
-        Vector2 minPosition = bounds.center - bounds.size / 2;
-        Vector2 maxPosition = bounds.center + bounds.size / 2;
+        const float maxHeightAddition = 3.0f;
 
-        minPosition.y += heightOffset;
-        maxPosition.y += heightOffset;
-
-        const int maxFailedAttempts = 100;
-        int failedAttempts = 0;
-
-        for(int i = 0; i < totalPlatformsToSpawn;)
+        while(height < bounds.yMax)
         {
-            if(failedAttempts >= maxFailedAttempts)
-                break;
 
             BasePlatform prefab = chances.GetRandomPlatform();
 
             Vector2 randomPosition = Vector2.zero;
 
-            randomPosition.x += UnityEngine.Random.Range(minPosition.x, maxPosition.x);
+            randomPosition.x += UnityEngine.Random.Range(bounds.xMin, bounds.xMax);
 
-            if(i < 2)
-                randomPosition.y = platforms.Max(platform => platform.transform.position.y) + bounds.height * 0.4f;
-            else
-                randomPosition.y += UnityEngine.Random.Range(minPosition.y, maxPosition.y);
+            randomPosition.y = platforms.Max(platform => platform.transform.position.y) + UnityEngine.Random.Range(chances.minimumHeightDifference, maxHeightAddition);
 
-            if(!CreatePlatform(prefab, randomPosition))
-            {
-                failedAttempts++;
-            }
-            else
-            {
-                i++;
-            }
+            if(randomPosition.y > bounds.yMax)
+                break;
+
+            CreatePlatform(prefab, randomPosition);
+            height = randomPosition.y;
 
         }
     }

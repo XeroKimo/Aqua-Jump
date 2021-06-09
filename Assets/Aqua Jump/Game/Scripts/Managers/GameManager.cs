@@ -26,7 +26,7 @@ public class GameManager : MonoBehaviour
     private BasePlatform m_previousPlatform;
     private float m_highestPlatformHeight = 0;
 
-    private const float m_cameraOffset = 3;
+    private const float m_cameraOffset = 4;
 
     public LineRenderer dragVisualizer;
     public float maxDragVisualizerDistance = 3;
@@ -53,11 +53,16 @@ public class GameManager : MonoBehaviour
         m_platformManager.onCollisionEnter += Platform_onCollisionEnter;
 
         Debug.Log(m_camera.bounds.center.y);
-        m_platformManager.CreateRandomPlatforms(m_camera.bounds, 0);
-        m_platformManager.CreateRandomPlatforms(m_camera.bounds, m_camera.bounds.height);
-        m_platformManager.CreateRandomPlatforms(m_camera.bounds, m_camera.bounds.height * 2);
-        m_platformManager.CreateRandomPlatforms(m_camera.bounds, m_camera.bounds.height * 3);
-        m_minimumNextPlatformHeight = m_camera.bounds.yMax;
+        Rect platformBounds = m_camera.bounds;
+        m_platformManager.CreateRandomPlatforms(platformBounds);
+
+        platformBounds.center += new Vector2(0, platformBounds.height);
+        m_platformManager.CreateRandomPlatforms(platformBounds);
+
+        platformBounds.center += new Vector2(0, platformBounds.height);
+        m_platformManager.CreateRandomPlatforms(platformBounds);
+
+        m_minimumNextPlatformHeight = platformBounds.height;
 
         m_previousPlatform = m_platformManager.startingPlatform;
     }
@@ -72,7 +77,10 @@ public class GameManager : MonoBehaviour
 
         while(m_minimumNextPlatformHeight < m_highestPlayerHeight)
         {
-            m_platformManager.CreateRandomPlatforms(m_camera.bounds, m_camera.bounds.height);
+            Rect platformBounds = m_camera.bounds;
+
+            platformBounds.center += new Vector2(0, platformBounds.height * 2);
+            m_platformManager.CreateRandomPlatforms(platformBounds);
             m_minimumNextPlatformHeight += m_camera.bounds.height;
         }
         
@@ -88,7 +96,16 @@ public class GameManager : MonoBehaviour
 
         Gizmos.DrawSphere(m_camera.bounds.min, 1);
 
-        Gizmos.DrawWireCube(new Vector2(0, m_minimumNextPlatformHeight + m_camera.bounds.height / 2) , m_camera.bounds.size);
+        Gizmos.DrawWireCube(new Vector2(0, m_minimumNextPlatformHeight +  m_cameraOffset) , m_camera.bounds.size);
+
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireCube(new Vector2(0, m_minimumNextPlatformHeight +  m_cameraOffset + m_camera.bounds.size.y * 2) , m_camera.bounds.size);
+
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireCube(new Vector2(0, m_minimumNextPlatformHeight +  m_cameraOffset - m_camera.bounds.size.y) , m_camera.bounds.size);
+
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireCube(new Vector2(0, m_minimumNextPlatformHeight +  m_cameraOffset + m_camera.bounds.size.y) , m_camera.bounds.size);
     }
 
     public void DestroyPlatform(BasePlatform platform)
@@ -141,6 +158,7 @@ public class GameManager : MonoBehaviour
     {
         if(arg1.gameObject == m_aqua.gameObject)
         {
+            m_aqua.ResetVelocity();
             arg2.CollisionVisit(m_aqua.CreateVisitor(this));
 
             if(arg2.transform.position.y > m_highestPlatformHeight)

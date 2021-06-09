@@ -15,11 +15,8 @@ MonoBehaviour:
   platforms:
   - platform: {fileID: 6987114320757515076, guid: bbe584e511d5a9e478060d0886daeba6,
       type: 3}
-    chance: 0.5
+    chance: 0.7
   - platform: {fileID: 6126333858057482808, guid: f17c79501dc5b6347aa71cdcf567fad4,
-      type: 3}
-    chance: 0.3
-  - platform: {fileID: -143956997671819956, guid: ffefefcebb82a7b46ab26fcccdc9e921,
       type: 3}
     chance: 0.3
   spawnCount: 2
