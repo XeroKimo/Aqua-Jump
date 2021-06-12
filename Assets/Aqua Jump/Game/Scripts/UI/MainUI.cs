@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using System;
 
-public class MainUI : MonoBehaviour
+public class MainUI : BaseUI
 {
     public Action onRestart;
 

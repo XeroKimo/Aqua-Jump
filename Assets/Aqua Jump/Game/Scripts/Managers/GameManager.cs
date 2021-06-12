@@ -23,6 +23,9 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private MainUI m_mainUI;
 
+    [SerializeField]
+    private GameOverUI m_gameOverUI;
+
     private bool m_firstJump = true;
 
     private float m_highestPlayerHeight = 0;
@@ -36,18 +39,20 @@ public class GameManager : MonoBehaviour
     public LineRenderer dragVisualizer;
     public float maxDragVisualizerDistance = 3;
 
-
+    public int score => (int)(m_highestPlayerHeight - m_aqua.colliderHeight);
 
     private void OnEnable()
     {
         m_controller.onDrag += OnDrag;
         m_mainUI.onRestart += RestartGame;
+        m_gameOverUI.onRestart += RestartGame;
     }
 
     private void OnDisable()
     {
         m_controller.onDrag -= OnDrag;
         m_mainUI.onRestart -= RestartGame;
+        m_gameOverUI.onRestart -= RestartGame;
     }
 
     // Start is called before the first frame update
@@ -83,7 +88,7 @@ public class GameManager : MonoBehaviour
         if(m_aqua.transform.position.y > m_highestPlayerHeight)
             m_highestPlayerHeight = m_aqua.transform.position.y;
 
-        m_mainUI.SetScore((int)(m_highestPlayerHeight - m_aqua.colliderHeight));
+        m_mainUI.SetScore(score);
 
         while(m_minimumNextPlatformHeight < m_highestPlayerHeight)
         {
@@ -225,7 +230,18 @@ public class GameManager : MonoBehaviour
     {
         if(m_aqua.transform.position.y < m_camera.bounds.yMin)
         {
-            RestartGame();
+            m_gameOverUI.Show();
+
+            const string highScoreString = "Highscore";
+            int highScore = PlayerPrefs.GetInt(highScoreString, 0);
+
+            if(score > highScore)
+                highScore = score;
+
+            PlayerPrefs.SetInt(highScoreString, highScore);
+
+            m_gameOverUI.SetScore(score);
+            m_gameOverUI.SetHighscore(highScore);
         }
     }
 
