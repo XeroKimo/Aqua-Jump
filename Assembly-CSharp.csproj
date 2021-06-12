@@ -76,6 +76,7 @@
     <Compile Include="Assets\Aqua Jump\Game\Scripts\Platforms\StationaryPlatform.cs" />
     <Compile Include="Assets\Aqua Jump\Game\Scripts\Player\Player.cs" />
     <Compile Include="Assets\Aqua Jump\Game\Scripts\Scriptable Objects\PlatformChances.cs" />
+    <Compile Include="Assets\Aqua Jump\Game\Scripts\Squish.cs" />
     <Compile Include="Assets\Aqua Jump\Game\Scripts\UI\BaseUI.cs" />
     <Compile Include="Assets\Aqua Jump\Game\Scripts\UI\GameOverUI.cs" />
     <Compile Include="Assets\Aqua Jump\Game\Scripts\UI\MainUI.cs" />

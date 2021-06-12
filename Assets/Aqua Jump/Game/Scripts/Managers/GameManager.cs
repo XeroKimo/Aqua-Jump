@@ -98,7 +98,6 @@ public class GameManager : MonoBehaviour
             m_platformManager.CreateRandomPlatforms(platformBounds);
             m_minimumNextPlatformHeight += m_camera.bounds.height;
         }
-        
     }
 
     private void OnDrawGizmos()
@@ -145,26 +144,32 @@ public class GameManager : MonoBehaviour
         direction = m_aqua.ClampDirection(direction);
         float magnitude = deltaPos.magnitude;
 
+        if(deltaPos.y < 0)
+            magnitude = 0;
+
         float dragVisualizerDistance = Mathf.Lerp(0, maxDragVisualizerDistance, magnitude * m_aqua.powerMultiplier / m_aqua.maxPower);
 
         dragVisualizer.SetPosition(0, m_aqua.transform.position);
         dragVisualizer.SetPosition(1, (Vector2)m_aqua.transform.position + direction * dragVisualizerDistance);
 
-        if(controller.state == PlayerController.State.Ended)
+
+        if(controller.state == PlayerController.State.Executing)
         {
             if(m_aqua.canJump)
             {
+                m_aqua.SquishAqua(Mathf.Clamp(magnitude * m_aqua.powerMultiplier / m_aqua.maxPower, 0, 1));
+            }
+        }
+        if(controller.state == PlayerController.State.Ended)
+        {
+            if(m_aqua.canJump && magnitude > 0)
+            {
                 m_aqua.Jump(direction, magnitude);
                 dragVisualizer.enabled = false;
+                m_aqua.ReleaseSquish();
 
                 if(m_previousPlatform is FragilePlatform)
                     DestroyPlatform(m_previousPlatform);
-
-                if(m_firstJump)
-                {
-                    m_firstJump = false;
-                    m_mainUI.DisableRestart();
-                }
             }
         }
     }
@@ -185,6 +190,15 @@ public class GameManager : MonoBehaviour
             {
                 m_highestPlatformHeight = arg2.transform.position.y;
                 m_camera.LerpPosition(new Vector3(0, m_aqua.transform.position.y + m_cameraOffset, -10), 1);
+            }
+
+            if(m_previousPlatform != null)
+            {
+                if(m_firstJump && m_previousPlatform != arg2)
+                {
+                    m_firstJump = false;
+                    m_mainUI.DisableRestart();
+                }
             }
 
             m_previousPlatform = arg2;

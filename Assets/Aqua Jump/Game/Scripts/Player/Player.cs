@@ -10,6 +10,9 @@ public class Player : MonoBehaviour
     private CapsuleCollider2D m_collider;
 
     [SerializeField]
+    private Animator m_animator;
+
+    [SerializeField]
     private float m_jumpAngleClamp;
     private float m_jumpAngleDotClamp;
     private Vector3 m_jumpMinAngle;
@@ -18,6 +21,7 @@ public class Player : MonoBehaviour
     private byte m_jumpCount = 0;
     private byte m_maxJumpCount = 1;
 
+    private bool m_inAir = false;
 
     public float powerMultiplier = 2.0f;
     public float maxPower = 10.0f;
@@ -51,7 +55,19 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+    }
 
+    private void FixedUpdate()
+    {
+        m_animator.SetFloat("Y Velocity", m_rigidBody.velocity.y);
+        RaycastHit2D hit = Physics2D.CapsuleCast((Vector2)transform.position - new Vector2(0, m_collider.size.y), m_collider.size, CapsuleDirection2D.Horizontal, 0, Vector2.down);
+        if(hit.collider)
+            m_animator.SetFloat("Nearest Ground Distance Y", hit.distance);
+        else
+            m_animator.SetFloat("Nearest Ground Distance Y", float.MaxValue);
+
+        if(m_rigidBody.velocity.y == 0)
+            ResetJumpCount();
     }
 
     private void OnDrawGizmos()
@@ -109,5 +125,17 @@ public class Player : MonoBehaviour
     public PlayerCollisionVisitor CreateVisitor(GameManager gameManager)
     {
         return new PlayerCollisionVisitor(this, gameManager);
+    }
+
+    public void SquishAqua(float value)
+    {
+        m_animator.SetFloat("Drag", value);
+        m_animator.SetBool("Squishing", true);
+    }
+
+    public void ReleaseSquish()
+    {
+        m_animator.SetFloat("Drag", 0);
+        m_animator.SetBool("Squishing", false);
     }
 }
