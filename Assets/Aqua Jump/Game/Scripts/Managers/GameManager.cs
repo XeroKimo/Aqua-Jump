@@ -80,7 +80,10 @@ public class GameManager : MonoBehaviour
         UpdatePlatformCollision();
         DetectFall();
 
-        m_highestPlayerHeight = m_aqua.transform.position.y;
+        if(m_aqua.transform.position.y > m_highestPlayerHeight)
+            m_highestPlayerHeight = m_aqua.transform.position.y;
+
+        m_mainUI.SetScore((int)(m_highestPlayerHeight - m_aqua.colliderHeight));
 
         while(m_minimumNextPlatformHeight < m_highestPlayerHeight)
         {
