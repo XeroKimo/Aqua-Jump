@@ -308,7 +308,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Armature|ArmatureAction
-  m_Speed: 1
+  m_Speed: 0.6
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: 1607007886264721298}
@@ -321,8 +321,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: -2451023543391036657, guid: f681d01940574f64fbdc788ffdaa4c9e,
-    type: 3}
+  m_Motion: {fileID: 963675878080924662, guid: f681d01940574f64fbdc788ffdaa4c9e, type: 3}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
