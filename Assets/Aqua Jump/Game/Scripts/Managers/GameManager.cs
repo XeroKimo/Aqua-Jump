@@ -20,6 +20,11 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private PlatformManager m_platformManager;
 
+    [SerializeField]
+    private MainUI m_mainUI;
+
+    private bool m_firstJump = true;
+
     private float m_highestPlayerHeight = 0;
     private float m_minimumNextPlatformHeight = 0;
 
@@ -36,11 +41,13 @@ public class GameManager : MonoBehaviour
     private void OnEnable()
     {
         m_controller.onDrag += OnDrag;
+        m_mainUI.onRestart += RestartGame;
     }
 
     private void OnDisable()
     {
         m_controller.onDrag -= OnDrag;
+        m_mainUI.onRestart -= RestartGame;
     }
 
     // Start is called before the first frame update
@@ -144,7 +151,12 @@ public class GameManager : MonoBehaviour
 
                 if(m_previousPlatform is FragilePlatform)
                     DestroyPlatform(m_previousPlatform);
-                    
+
+                if(m_firstJump)
+                {
+                    m_firstJump = false;
+                    m_mainUI.DisableRestart();
+                }
             }
         }
     }
@@ -196,8 +208,11 @@ public class GameManager : MonoBehaviour
         foreach(BasePlatform platform in m_platformManager.platforms)
         {
             float minAquaHeight = platform.transform.position.y + platform.collider.bounds.extents.y + m_aqua.colliderHeight / 2;
-            if(minAquaHeight < m_aqua.transform.position.y && m_aqua.velocity.y < 0)
-                platform.EnableCollisions();
+            if(minAquaHeight < m_aqua.transform.position.y)
+            {
+                if(m_aqua.velocity.y < 0)
+                    platform.EnableCollisions();
+            }
             else
                 platform.DisableCollisions();
         }
