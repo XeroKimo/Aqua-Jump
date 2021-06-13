@@ -61,13 +61,13 @@ public class PlatformManager : MonoBehaviour
     private bool CreatePlatform(BasePlatform prefab, Vector2 position)
     {
         BasePlatform platform = Instantiate(prefab, position, Quaternion.identity, transform);
-
+        
         if(platforms.Any(comp =>
         {
-            return comp.transform.position.x < platform.transform.position.x + platform.collider.size.x * platform.transform.localScale.x &&
-                platform.transform.position.x < comp.transform.position.x + comp.collider.size.x * comp.transform.localScale.x &&
-                comp.transform.position.y < platform.transform.position.y + platform.collider.size.y * platform.transform.localScale.y &&
-                platform.transform.position.y < comp.transform.position.y + comp.collider.size.y * comp.transform.localScale.y;
+            return (comp.collider.bounds.min.x < platform.collider.bounds.min.x + platform.collider.size.x * platform.transform.localScale.x &&
+                comp.collider.bounds.min.y < platform.collider.bounds.min.y + platform.collider.size.y * platform.transform.localScale.y &&
+                platform.collider.bounds.min.x < comp.collider.bounds.min.x + comp.collider.size.x * comp.transform.localScale.x &&
+                platform.collider.bounds.min.y < comp.collider.bounds.min.y + comp.collider.size.y * comp.transform.localScale.y);
         }))
         {
             Destroy(platform.gameObject);
