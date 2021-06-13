@@ -34,7 +34,8 @@ public class GameManager : MonoBehaviour
     private BasePlatform m_previousPlatform;
     private float m_highestPlatformHeight = 0;
 
-    private const float m_cameraOffset = 4;
+    private float m_cameraOffset = 0;
+    private float m_cameraStartHeight = 0;
 
     public LineRenderer dragVisualizer;
     public float maxDragVisualizerDistance = 3;
@@ -58,6 +59,9 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     private void Start()
     {
+        m_cameraOffset = m_camera.transform.position.y - m_aqua.transform.position.y;
+        m_cameraStartHeight = m_camera.transform.position.y;
+
         dragVisualizer.enabled = false;
         m_camera.onLerpFinished += OnLerpFinished;
 
@@ -110,20 +114,22 @@ public class GameManager : MonoBehaviour
 
         Gizmos.DrawSphere(m_camera.bounds.min, 1);
 
-        Gizmos.DrawWireCube(new Vector2(0, m_minimumNextPlatformHeight +  m_cameraOffset) , m_camera.bounds.size);
+        Gizmos.DrawWireCube(new Vector2(0, m_minimumNextPlatformHeight + m_cameraStartHeight) , m_camera.bounds.size);
 
         Gizmos.color = Color.green;
-        Gizmos.DrawWireCube(new Vector2(0, m_minimumNextPlatformHeight +  m_cameraOffset + m_camera.bounds.size.y * 2) , m_camera.bounds.size);
+        Gizmos.DrawWireCube(new Vector2(0, m_minimumNextPlatformHeight + m_cameraStartHeight + m_camera.bounds.size.y * 2) , m_camera.bounds.size);
 
         Gizmos.color = Color.blue;
-        Gizmos.DrawWireCube(new Vector2(0, m_minimumNextPlatformHeight +  m_cameraOffset - m_camera.bounds.size.y) , m_camera.bounds.size);
+        Gizmos.DrawWireCube(new Vector2(0, m_minimumNextPlatformHeight + m_cameraStartHeight - m_camera.bounds.size.y) , m_camera.bounds.size);
 
         Gizmos.color = Color.blue;
-        Gizmos.DrawWireCube(new Vector2(0, m_minimumNextPlatformHeight +  m_cameraOffset + m_camera.bounds.size.y) , m_camera.bounds.size);
+        Gizmos.DrawWireCube(new Vector2(0, m_minimumNextPlatformHeight + m_cameraStartHeight + m_camera.bounds.size.y) , m_camera.bounds.size);
     }
 
     public void DestroyPlatform(BasePlatform platform)
     {
+        if(platform == null)
+            return;
         m_platformManager.platforms.Remove(platform);
         Destroy(platform.gameObject);
     }

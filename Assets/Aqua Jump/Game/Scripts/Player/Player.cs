@@ -21,7 +21,7 @@ public class Player : MonoBehaviour
     private byte m_jumpCount = 0;
     private byte m_maxJumpCount = 1;
 
-    private bool m_inAir = false;
+    private bool m_inAirLastFrame = false;
 
     public float powerMultiplier = 2.0f;
     public float maxPower = 10.0f;
@@ -59,7 +59,11 @@ public class Player : MonoBehaviour
 
     private void FixedUpdate()
     {
-        m_animator.SetFloat("Y Velocity", m_rigidBody.velocity.y);
+        bool inAirCurrentFrame = m_rigidBody.velocity.y != 0;
+
+        if(!inAirCurrentFrame && m_inAirLastFrame)
+            m_animator.SetTrigger("Landed");
+
         RaycastHit2D hit = Physics2D.CapsuleCast((Vector2)transform.position - new Vector2(0, m_collider.size.y), m_collider.size, CapsuleDirection2D.Horizontal, 0, Vector2.down);
         if(hit.collider)
             m_animator.SetFloat("Nearest Ground Distance Y", hit.distance);
@@ -68,6 +72,8 @@ public class Player : MonoBehaviour
 
         if(m_rigidBody.velocity.y == 0)
             ResetJumpCount();
+
+        m_inAirLastFrame = inAirCurrentFrame;
     }
 
     private void OnDrawGizmos()
