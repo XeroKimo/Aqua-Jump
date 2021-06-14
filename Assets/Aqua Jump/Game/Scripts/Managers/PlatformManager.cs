@@ -32,10 +32,8 @@ public class PlatformManager : MonoBehaviour
         float height = bounds.yMin;
 
         const float maxHeightAddition = 3.0f;
-
         while(height < bounds.yMax)
         {
-
             BasePlatform prefab = chances.GetRandomPlatform();
 
             Vector2 randomPosition = Vector2.zero;
@@ -58,16 +56,23 @@ public class PlatformManager : MonoBehaviour
         onCollisionEnter?.Invoke(arg1, arg2);
     }
 
+    private int platformID = 0;
+
     private bool CreatePlatform(BasePlatform prefab, Vector2 position)
     {
         BasePlatform platform = Instantiate(prefab, position, Quaternion.identity, transform);
-        
+        platform.name += platformID;
+        platformID++;
+
         if(platforms.Any(comp =>
         {
-            return (comp.collider.bounds.min.x < platform.collider.bounds.min.x + platform.collider.size.x * platform.transform.localScale.x &&
-                comp.collider.bounds.min.y < platform.collider.bounds.min.y + platform.collider.size.y * platform.transform.localScale.y &&
-                platform.collider.bounds.min.x < comp.collider.bounds.min.x + comp.collider.size.x * comp.transform.localScale.x &&
-                platform.collider.bounds.min.y < comp.collider.bounds.min.y + comp.collider.size.y * comp.transform.localScale.y);
+            Vector2 minOne = comp.transform.position - ((Vector3)comp.collider.size + comp.transform.localScale)/ 2;
+            Vector2 maxOne = comp.transform.position + ((Vector3)comp.collider.size + comp.transform.localScale)/ 2;
+            Vector2 minTwo = platform.transform.position - ((Vector3)platform.collider.size + platform.transform.localScale) / 2;
+            Vector2 maxTwo = platform.transform.position + ((Vector3)platform.collider.size + platform.transform.localScale) / 2;
+
+            return (minOne.x <= maxTwo.x && maxOne.x >= minTwo.x) && (minOne.y <= maxTwo.y && maxOne.y >= minTwo.y) ||
+                (minOne.x >= maxTwo.x && maxOne.x <= minTwo.x) && (minOne.y >= maxTwo.y && maxOne.y <= minTwo.y); 
         }))
         {
             Destroy(platform.gameObject);

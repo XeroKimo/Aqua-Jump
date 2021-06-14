@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(CapsuleCollider2D))]
@@ -23,6 +24,8 @@ public class Player : MonoBehaviour
 
     private bool m_inAirLastFrame = false;
 
+    private List<BasePowerUp> m_powerUps = new List<BasePowerUp>();
+
     public float powerMultiplier = 2.0f;
     public float maxPower = 10.0f;
 
@@ -33,6 +36,7 @@ public class Player : MonoBehaviour
     public float colliderHeight => m_collider.bounds.size.y;
 
     public Vector2 velocity => m_rigidBody.velocity;
+    public bool canRevive => m_powerUps.Any(powerUp => powerUp is SecondChancePowerUp);
 
     private void Awake()
     {
@@ -55,6 +59,13 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        List<BasePowerUp> powerUps = new List<BasePowerUp>(m_powerUps);
+        foreach(BasePowerUp powerUp in powerUps)
+        {
+            powerUp.Update();
+            if(powerUp.ended)
+                m_powerUps.Remove(powerUp);
+        }
     }
 
     private void FixedUpdate()
@@ -106,9 +117,7 @@ public class Player : MonoBehaviour
 
     public void ResetJumpCount()
     {
-        m_jumpCount += 1;
-
-        m_jumpCount = (byte)Mathf.Clamp(m_jumpCount, 0, m_maxJumpCount);
+        m_jumpCount = (byte)Mathf.Max(m_jumpCount, m_maxJumpCount);
     }
 
     public void ResetVelocity()
@@ -143,5 +152,70 @@ public class Player : MonoBehaviour
     {
         m_animator.SetFloat("Drag", 0);
         m_animator.SetBool("Squishing", false);
+    }
+
+    public void AddDoubleJumpPowerUp()
+    {
+        BasePowerUp powerUp = m_powerUps.FirstOrDefault(p => p is DoubleJumpPowerUp);
+        if(powerUp != null)
+        {
+            powerUp.Reset();
+        }
+        else
+        {
+            m_maxJumpCount = 2;
+            m_powerUps.Add(new DoubleJumpPowerUp(30, EndDoubleJumpPowerUp));
+
+            m_jumpCount += 1;
+            m_jumpCount = (byte)Mathf.Clamp(m_jumpCount, 0, m_maxJumpCount);
+        }
+    }
+
+    public void AddShieldPowerUp()
+    {
+        BasePowerUp powerUp = m_powerUps.FirstOrDefault(p => p is ShieldPowerUp);
+        if(powerUp != null)
+        {
+            powerUp.Reset();
+        }
+        else
+        {
+            m_maxJumpCount = 2;
+            m_powerUps.Add(new ShieldPowerUp(30, EndShieldPowerUp));
+        }
+    }
+
+    public void AddSecondChancePowerUp()
+    {
+        BasePowerUp powerUp = m_powerUps.FirstOrDefault(p => p is SecondChancePowerUp);
+        if(powerUp != null)
+        {
+            powerUp.Reset();
+        }
+        else
+        {
+            m_maxJumpCount = 2;
+            m_powerUps.Add(new SecondChancePowerUp(30, EndSecondChancePowerUp));
+        }
+    }
+
+    public void ConsumeSecondChance()
+    {
+        m_powerUps.First(powerUp => powerUp is SecondChancePowerUp).End();
+    }
+
+    private void EndDoubleJumpPowerUp()
+    {
+        m_maxJumpCount = 1;
+    }
+
+    private void EndShieldPowerUp()
+    {
+
+    }
+
+    private void EndSecondChancePowerUp()
+    {
+
     }
 }

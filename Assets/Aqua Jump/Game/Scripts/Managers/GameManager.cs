@@ -45,14 +45,14 @@ public class GameManager : MonoBehaviour
     private void OnEnable()
     {
         m_controller.onDrag += OnDrag;
-        m_mainUI.onRestart += RestartGame;
+        m_mainUI.onRestart += ShuffleWorld;
         m_gameOverUI.onRestart += RestartGame;
     }
 
     private void OnDisable()
     {
         m_controller.onDrag -= OnDrag;
-        m_mainUI.onRestart -= RestartGame;
+        m_mainUI.onRestart -= ShuffleWorld;
         m_gameOverUI.onRestart -= RestartGame;
     }
 
@@ -68,19 +68,9 @@ public class GameManager : MonoBehaviour
         m_platformManager.Initialize();
         m_platformManager.onCollisionEnter += Platform_onCollisionEnter;
 
-        Debug.Log(m_camera.bounds.center.y);
-        Rect platformBounds = m_camera.bounds;
-        m_platformManager.CreateRandomPlatforms(platformBounds);
-
-        platformBounds.center += new Vector2(0, platformBounds.height);
-        m_platformManager.CreateRandomPlatforms(platformBounds);
-
-        platformBounds.center += new Vector2(0, platformBounds.height);
-        m_platformManager.CreateRandomPlatforms(platformBounds);
-
-        m_minimumNextPlatformHeight = platformBounds.height;
-
         m_previousPlatform = m_platformManager.startingPlatform;
+
+        ShuffleWorld();
     }
 
     private void FixedUpdate()
@@ -130,6 +120,7 @@ public class GameManager : MonoBehaviour
     {
         if(platform == null)
             return;
+
         m_platformManager.platforms.Remove(platform);
         Destroy(platform.gameObject);
     }
@@ -250,18 +241,27 @@ public class GameManager : MonoBehaviour
     {
         if(m_aqua.transform.position.y < m_camera.bounds.yMin)
         {
-            m_gameOverUI.Show();
+            if(m_aqua.canRevive)
+            {
+                m_aqua.ConsumeSecondChance();
 
-            const string highScoreString = "Highscore";
-            int highScore = PlayerPrefs.GetInt(highScoreString, 0);
 
-            if(score > highScore)
-                highScore = score;
+            }
+            else
+            {
+                m_gameOverUI.Show();
 
-            PlayerPrefs.SetInt(highScoreString, highScore);
+                const string highScoreString = "Highscore";
+                int highScore = PlayerPrefs.GetInt(highScoreString, 0);
 
-            m_gameOverUI.SetScore(score);
-            m_gameOverUI.SetHighscore(highScore);
+                if(score > highScore)
+                    highScore = score;
+
+                PlayerPrefs.SetInt(highScoreString, highScore);
+
+                m_gameOverUI.SetScore(score);
+                m_gameOverUI.SetHighscore(highScore);
+            }
         }
     }
 
@@ -277,5 +277,28 @@ public class GameManager : MonoBehaviour
                 DestroyPlatform(platform);
             }
         }
+    }
+
+    private void ShuffleWorld()
+    {
+        List<BasePlatform> platforms = new List<BasePlatform>(m_platformManager.platforms);
+        foreach(BasePlatform platform in platforms)
+        {
+            if(platform == m_previousPlatform)
+                continue;
+
+            DestroyPlatform(platform);
+        }
+
+        Rect platformBounds = m_camera.bounds;
+        m_platformManager.CreateRandomPlatforms(platformBounds);
+
+        platformBounds.center += new Vector2(0, platformBounds.height);
+        m_platformManager.CreateRandomPlatforms(platformBounds);
+
+        platformBounds.center += new Vector2(0, platformBounds.height);
+        m_platformManager.CreateRandomPlatforms(platformBounds);
+
+        m_minimumNextPlatformHeight = platformBounds.height;
     }
 }

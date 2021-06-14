@@ -44,6 +44,5 @@ public class PlayerCollisionVisitor : PlatformCollisionVisitor
     private void CommonResolution(BasePlatform platform)
     {
         Debug.Log($"{platform.GetType()} Collided with player");
-        m_player.ResetJumpCount();
     }
 }

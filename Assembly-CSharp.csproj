@@ -75,6 +75,10 @@
     <Compile Include="Assets\Aqua Jump\Game\Scripts\Platforms\MovingPlatform.cs" />
     <Compile Include="Assets\Aqua Jump\Game\Scripts\Platforms\StationaryPlatform.cs" />
     <Compile Include="Assets\Aqua Jump\Game\Scripts\Player\Player.cs" />
+    <Compile Include="Assets\Aqua Jump\Game\Scripts\Power Ups\BasePowerUpObject.cs" />
+    <Compile Include="Assets\Aqua Jump\Game\Scripts\Power Ups\DoubleJumpPowerUpObject.cs" />
+    <Compile Include="Assets\Aqua Jump\Game\Scripts\Power Ups\SecondChancePowerUpObject.cs" />
+    <Compile Include="Assets\Aqua Jump\Game\Scripts\Power Ups\ShieldPowerUpObject.cs" />
     <Compile Include="Assets\Aqua Jump\Game\Scripts\Scriptable Objects\PlatformChances.cs" />
     <Compile Include="Assets\Aqua Jump\Game\Scripts\Squish.cs" />
     <Compile Include="Assets\Aqua Jump\Game\Scripts\UI\BaseUI.cs" />
