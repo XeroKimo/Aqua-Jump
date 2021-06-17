@@ -59,6 +59,7 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     private void Start()
     {
+        m_camera.trackedGameObject = m_aqua.gameObject;
         m_cameraOffset = m_camera.transform.position.y - m_aqua.transform.position.y;
         m_cameraStartHeight = m_camera.transform.position.y;
 
@@ -185,8 +186,11 @@ public class GameManager : MonoBehaviour
 
             if(arg2.transform.position.y > m_highestPlatformHeight)
             {
+                //m_killPlane = m_camera.bounds.yMin;
                 m_highestPlatformHeight = arg2.transform.position.y;
-                m_camera.LerpPosition(new Vector3(0, m_aqua.transform.position.y + m_cameraOffset, -10), 1);
+
+                RemovePlatforms();
+                //m_camera.LerpPosition(new Vector3(0, m_aqua.transform.position.y + m_cameraOffset, -10), 1);
             }
 
             if(m_previousPlatform != null)

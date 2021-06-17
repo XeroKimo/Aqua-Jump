@@ -20,12 +20,11 @@ public class BasePowerUp
 
     public void Update()
     {
+        m_time -= Time.deltaTime;
         if(m_time <= 0)
         {
             m_onPowerUpEnded?.Invoke();
         }
-
-        m_time -= Time.deltaTime;
     }
 
     public void Reset()

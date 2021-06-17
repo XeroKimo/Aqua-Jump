@@ -26,6 +26,16 @@ public class CameraController : MonoBehaviour
         }
     }
 
+    public Rect noTrackBounds;
+    public float speed;
+    public GameObject trackedGameObject;
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.cyan;
+
+        Gizmos.DrawWireCube(noTrackBounds.center + (Vector2)camera.transform.position, noTrackBounds.size);
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -33,13 +43,26 @@ public class CameraController : MonoBehaviour
 
     }
 
-    public void LerpPosition(Vector3 position, float t)
+    //public void LerpPosition(Vector3 position, float t)
+    //{
+    //    m_targetPos = position;
+    //    m_currentPos = transform.position;
+    //    m_lerpTime = t;
+    //    m_time = 0;
+    //    m_isLerping = true;
+    //}
+
+    private void FixedUpdate()
     {
-        m_targetPos = position;
-        m_currentPos = transform.position;
-        m_lerpTime = t;
-        m_time = 0;
-        m_isLerping = true;
+
+        if(trackedGameObject)
+        {
+            if(trackedGameObject.transform.position.y > noTrackBounds.yMax + camera.transform.position.y)
+            {
+                camera.transform.position += new Vector3(0, speed * Time.fixedDeltaTime);
+            }
+
+        }
     }
 
     // Update is called once per frame

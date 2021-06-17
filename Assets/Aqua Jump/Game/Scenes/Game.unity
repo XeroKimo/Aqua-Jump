@@ -1299,6 +1299,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   camera: {fileID: 968678081}
+  noTrackBounds:
+    serializedVersion: 2
+    x: -2.8125
+    y: -5
+    width: 5.625
+    height: 6
+  speed: 5
+  trackedGameObject: {fileID: 0}
 --- !u!1 &1112637718
 GameObject:
   m_ObjectHideFlags: 0

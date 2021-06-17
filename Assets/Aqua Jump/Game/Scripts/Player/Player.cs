@@ -19,8 +19,8 @@ public class Player : MonoBehaviour
     private Vector3 m_jumpMinAngle;
     private Vector3 m_jumpMaxAngle;
 
-    private byte m_jumpCount = 0;
-    private byte m_maxJumpCount = 1;
+    private bool m_canJump = false;
+    private bool m_canDoubleJump = false;
 
     private bool m_inAirLastFrame = false;
 
@@ -32,7 +32,7 @@ public class Player : MonoBehaviour
     public Vector2 launchDirection { get; private set; }
     public float launchPower { get; private set; }
 
-    public bool canJump => m_jumpCount > 0;
+    public bool canJump => m_canJump || m_canDoubleJump;
     public float colliderHeight => m_collider.bounds.size.y;
 
     public Vector2 velocity => m_rigidBody.velocity;
@@ -70,19 +70,20 @@ public class Player : MonoBehaviour
 
     private void FixedUpdate()
     {
-        bool inAirCurrentFrame = m_rigidBody.velocity.y != 0;
-
-        if(!inAirCurrentFrame && m_inAirLastFrame)
-            m_animator.SetTrigger("Landed");
+        float distance = float.MaxValue;
 
         RaycastHit2D hit = Physics2D.CapsuleCast((Vector2)transform.position - new Vector2(0, m_collider.size.y), m_collider.size, CapsuleDirection2D.Horizontal, 0, Vector2.down);
         if(hit.collider)
-            m_animator.SetFloat("Nearest Ground Distance Y", hit.distance);
-        else
-            m_animator.SetFloat("Nearest Ground Distance Y", float.MaxValue);
+            distance = hit.distance;
 
-        if(m_rigidBody.velocity.y == 0)
+        m_animator.SetFloat("Nearest Ground Distance Y", distance);
+        bool inAirCurrentFrame = m_rigidBody.velocity.y != 0;
+
+        if(!inAirCurrentFrame && m_inAirLastFrame)
+        {
+            m_animator.SetTrigger("Landed");
             ResetJumpCount();
+        }
 
         m_inAirLastFrame = inAirCurrentFrame;
     }
@@ -102,12 +103,16 @@ public class Player : MonoBehaviour
 
     public void Jump(Vector2 direction, float power)
     {
+        ResetVelocity();
+
         launchDirection = direction;
         launchPower = Mathf.Min(power * powerMultiplier, maxPower);
 
         m_rigidBody.AddForce(launchDirection * launchPower, ForceMode2D.Impulse);
 
-        m_jumpCount--;
+        if(!m_canJump && m_canDoubleJump)
+            m_canDoubleJump = false;
+        m_canJump = false;
     }
 
     public void Teleport(Vector2 position)
@@ -117,7 +122,8 @@ public class Player : MonoBehaviour
 
     public void ResetJumpCount()
     {
-        m_jumpCount = (byte)Mathf.Max(m_jumpCount, m_maxJumpCount);
+        m_canJump = true;
+        m_canDoubleJump = (m_canDoubleJump == true) ? true : (m_powerUps.Any(powerUp => powerUp is DoubleJumpPowerUp));
     }
 
     public void ResetVelocity()
@@ -163,11 +169,8 @@ public class Player : MonoBehaviour
         }
         else
         {
-            m_maxJumpCount = 2;
+            m_canDoubleJump = true;
             m_powerUps.Add(new DoubleJumpPowerUp(30, EndDoubleJumpPowerUp));
-
-            m_jumpCount += 1;
-            m_jumpCount = (byte)Mathf.Clamp(m_jumpCount, 0, m_maxJumpCount);
         }
     }
 
@@ -180,7 +183,6 @@ public class Player : MonoBehaviour
         }
         else
         {
-            m_maxJumpCount = 2;
             m_powerUps.Add(new ShieldPowerUp(30, EndShieldPowerUp));
         }
     }
@@ -194,7 +196,6 @@ public class Player : MonoBehaviour
         }
         else
         {
-            m_maxJumpCount = 2;
             m_powerUps.Add(new SecondChancePowerUp(30, EndSecondChancePowerUp));
         }
     }
@@ -206,7 +207,7 @@ public class Player : MonoBehaviour
 
     private void EndDoubleJumpPowerUp()
     {
-        m_maxJumpCount = 1;
+        Debug.LogWarning("Double jump ended");
     }
 
     private void EndShieldPowerUp()
