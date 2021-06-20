@@ -651,7 +651,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 86db39938e5e8b44d83da0b26af7f39f, type: 2}
   - {fileID: 11400000, guid: 86db39938e5e8b44d83da0b26af7f39f, type: 2}
   m_startingPlatform: {fileID: 1409762656530877562}
-  m_widthMultiplier: 0.9
   platforms: []
 --- !u!4 &450920591 stripped
 Transform:
@@ -783,7 +782,7 @@ Transform:
   m_GameObject: {fileID: 774451282}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 1.64, z: 0}
-  m_LocalScale: {x: 0.9, y: 0.9, z: 0.9}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 221127976}
   m_Father: {fileID: 826266520}
@@ -1226,7 +1225,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 7.5
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2

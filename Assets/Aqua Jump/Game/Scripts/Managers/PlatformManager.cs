@@ -12,9 +12,6 @@ public class PlatformManager : MonoBehaviour
     [SerializeField]
     private GroundPlatform m_startingPlatform;
 
-    [SerializeField]
-    private float m_widthMultiplier;
-
     [HideInInspector]
     public List<BasePlatform> platforms = new List<BasePlatform>();
 
@@ -41,7 +38,7 @@ public class PlatformManager : MonoBehaviour
 
             Vector2 randomPosition = Vector2.zero;
 
-            float halfWidth = (prefab.collider.size.x * prefab.transform.localScale.x * m_widthMultiplier) / 2;
+            float halfWidth = (prefab.collider.size.x * prefab.transform.localScale.x) / 2;
 
             randomPosition.x += UnityEngine.Random.Range(bounds.xMin + halfWidth, bounds.xMax - halfWidth);
 
@@ -83,8 +80,6 @@ public class PlatformManager : MonoBehaviour
             Destroy(platform.gameObject);
             return false;
         }
-
-        platform.transform.localScale = new Vector3(platform.transform.localScale.x * m_widthMultiplier, 1, 1);
 
         platforms.Add(platform);
         platform.onCollisionEnter += PlatformCollisionEnter;
