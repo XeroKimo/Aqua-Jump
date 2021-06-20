@@ -272,14 +272,15 @@ public class GameManager : MonoBehaviour
     private void RemovePlatforms()
     {
         Rect cameraBounds = m_camera.bounds;
+        Bounds bounds = new Bounds();
+        bounds.size = cameraBounds.size;
+        bounds.center = cameraBounds.center;
         List<BasePlatform> platformCopy = new List<BasePlatform>(m_platformManager.platforms);
 
         foreach(BasePlatform platform in platformCopy)
         {
-            if(platform.transform.position.y < cameraBounds.yMin)
-            {
+            if(!platform.collider.bounds.Intersects(bounds) && platform.transform.position.y < cameraBounds.yMin)
                 DestroyPlatform(platform);
-            }
         }
     }
 

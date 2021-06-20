@@ -95,7 +95,7 @@ GameObject:
   - component: {fileID: 7483359002447217764}
   - component: {fileID: 6987114320757515076}
   m_Layer: 0
-  m_Name: Stationary Platform 1
+  m_Name: Fragile Platform
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -175,6 +175,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0bce775145cb0e948bfc8ebecceaeddc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_rigidBody: {fileID: 7483359002447217767}
+  m_collider: {fileID: 7483359002447217764}
 --- !u!1 &8419012133527037937
 GameObject:
   m_ObjectHideFlags: 0

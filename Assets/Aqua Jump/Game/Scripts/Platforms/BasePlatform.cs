@@ -9,15 +9,16 @@ public abstract class BasePlatform : MonoBehaviour
 {
     public event Action<Collision2D, BasePlatform> onCollisionEnter;
 
+    [SerializeField]
     private Rigidbody2D m_rigidBody;
+
+    [SerializeField]
     private BoxCollider2D m_collider;
 
     public new BoxCollider2D collider => m_collider;
 
     void Awake()
     {
-        m_rigidBody = GetComponent<Rigidbody2D>();
-        m_collider = GetComponent<BoxCollider2D>();
         m_rigidBody.bodyType = RigidbodyType2D.Kinematic;
     }
 

@@ -64,6 +64,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Aqua Jump\Game\Scripts\Animator\Squish.cs" />
     <Compile Include="Assets\Aqua Jump\Game\Scripts\Controller\CameraController.cs" />
     <Compile Include="Assets\Aqua Jump\Game\Scripts\Controller\PlayerController.cs" />
     <Compile Include="Assets\Aqua Jump\Game\Scripts\Managers\GameManager.cs" />
@@ -80,7 +81,6 @@
     <Compile Include="Assets\Aqua Jump\Game\Scripts\Power Ups\SecondChancePowerUpObject.cs" />
     <Compile Include="Assets\Aqua Jump\Game\Scripts\Power Ups\ShieldPowerUpObject.cs" />
     <Compile Include="Assets\Aqua Jump\Game\Scripts\Scriptable Objects\PlatformChances.cs" />
-    <Compile Include="Assets\Aqua Jump\Game\Scripts\Squish.cs" />
     <Compile Include="Assets\Aqua Jump\Game\Scripts\UI\BaseUI.cs" />
     <Compile Include="Assets\Aqua Jump\Game\Scripts\UI\GameOverUI.cs" />
     <Compile Include="Assets\Aqua Jump\Game\Scripts\UI\MainUI.cs" />

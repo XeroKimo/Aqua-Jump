@@ -95,7 +95,7 @@ GameObject:
   - component: {fileID: 7483359002447217764}
   - component: {fileID: 6126333858057482808}
   m_Layer: 0
-  m_Name: Stationary Platform
+  m_Name: Moving Platform Horizontal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -175,6 +175,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 83dc9f8b4e25b5147adfe84a14b87c34, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_rigidBody: {fileID: 7483359002447217767}
+  m_collider: {fileID: 7483359002447217764}
 --- !u!1 &8419012133527037937
 GameObject:
   m_ObjectHideFlags: 0
