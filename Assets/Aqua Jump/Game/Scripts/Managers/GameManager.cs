@@ -18,13 +18,18 @@ public class GameManager : MonoBehaviour
     private float m_wrappingBoundsExtent = 1.3f;
 
     [SerializeField]
-    private PlatformManager m_platformManager;
+    private LevelSpawner m_levelGenerator;
 
     [SerializeField]
     private MainUI m_mainUI;
 
     [SerializeField]
     private GameOverUI m_gameOverUI;
+
+    [SerializeField]
+    private GroundPlatform m_startingPlatform;
+
+    private List<BasePlatform> m_platforms = new List<BasePlatform>();
 
     private bool m_firstJump = true;
 
@@ -34,7 +39,6 @@ public class GameManager : MonoBehaviour
     private BasePlatform m_previousPlatform;
     private float m_highestPlatformHeight = 0;
 
-    private float m_cameraOffset = 0;
     private float m_cameraStartHeight = 0;
 
     public LineRenderer dragVisualizer;
@@ -60,16 +64,13 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         m_camera.trackedGameObject = m_aqua.gameObject;
-        m_cameraOffset = m_camera.transform.position.y - m_aqua.transform.position.y;
         m_cameraStartHeight = m_camera.transform.position.y;
 
         dragVisualizer.enabled = false;
         m_camera.onLerpFinished += OnLerpFinished;
+        m_previousPlatform = m_startingPlatform;
 
-        m_platformManager.Initialize();
-        m_platformManager.onCollisionEnter += Platform_onCollisionEnter;
-
-        m_previousPlatform = m_platformManager.startingPlatform;
+        m_platforms.Add(m_startingPlatform);
 
         ShuffleWorld();
     }
@@ -90,7 +91,7 @@ public class GameManager : MonoBehaviour
             Rect platformBounds = m_camera.bounds;
 
             platformBounds.center += new Vector2(0, platformBounds.height * 2);
-            m_platformManager.CreateRandomPlatforms(platformBounds);
+            GenerateLevel(platformBounds);
             m_minimumNextPlatformHeight += m_camera.bounds.height;
         }
     }
@@ -122,7 +123,7 @@ public class GameManager : MonoBehaviour
         if(platform == null)
             return;
 
-        m_platformManager.platforms.Remove(platform);
+        m_platforms.Remove(platform);
         Destroy(platform.gameObject);
     }
 
@@ -177,7 +178,7 @@ public class GameManager : MonoBehaviour
         RemovePlatforms();
     }
 
-    private void Platform_onCollisionEnter(Collision2D arg1, BasePlatform arg2)
+    private void HandlePlatformCollision(Collision2D arg1, BasePlatform arg2)
     {
         if(arg1.gameObject == m_aqua.gameObject)
         {
@@ -190,7 +191,6 @@ public class GameManager : MonoBehaviour
                 m_highestPlatformHeight = arg2.transform.position.y;
 
                 RemovePlatforms();
-                //m_camera.LerpPosition(new Vector3(0, m_aqua.transform.position.y + m_cameraOffset, -10), 1);
             }
 
             if(m_previousPlatform != null)
@@ -228,7 +228,7 @@ public class GameManager : MonoBehaviour
 
     private void UpdatePlatformCollision()
     {
-        foreach(BasePlatform platform in m_platformManager.platforms)
+        foreach(BasePlatform platform in m_platforms)
         {
             float minAquaHeight = platform.transform.position.y + platform.collider.bounds.extents.y + m_aqua.colliderHeight / 2;
             if(minAquaHeight < m_aqua.transform.position.y)
@@ -275,7 +275,7 @@ public class GameManager : MonoBehaviour
         Bounds bounds = new Bounds();
         bounds.size = cameraBounds.size;
         bounds.center = cameraBounds.center;
-        List<BasePlatform> platformCopy = new List<BasePlatform>(m_platformManager.platforms);
+        List<BasePlatform> platformCopy = new List<BasePlatform>(m_platforms);
 
         foreach(BasePlatform platform in platformCopy)
         {
@@ -286,24 +286,36 @@ public class GameManager : MonoBehaviour
 
     private void ShuffleWorld()
     {
-        List<BasePlatform> platforms = new List<BasePlatform>(m_platformManager.platforms);
+        List<BasePlatform> platforms = new List<BasePlatform>(m_platforms);
+
+        platforms.Remove(m_previousPlatform);
         foreach(BasePlatform platform in platforms)
         {
-            if(platform == m_previousPlatform)
-                continue;
-
             DestroyPlatform(platform);
         }
 
         Rect platformBounds = m_camera.bounds;
-        m_platformManager.CreateRandomPlatforms(platformBounds);
+        GenerateLevel(platformBounds);
 
         platformBounds.center += new Vector2(0, platformBounds.height);
-        m_platformManager.CreateRandomPlatforms(platformBounds);
+        GenerateLevel(platformBounds);
 
         platformBounds.center += new Vector2(0, platformBounds.height);
-        m_platformManager.CreateRandomPlatforms(platformBounds);
+        GenerateLevel(platformBounds);
 
         m_minimumNextPlatformHeight = platformBounds.height;
     }
+
+    private void GenerateLevel(Rect bounds)
+    {
+        m_levelGenerator.GenerateLevel(bounds, m_platforms, out List<BasePlatform> platforms, out List<BasePowerUpObject> powerUps);
+
+        foreach(BasePlatform platform in platforms)
+        {
+            platform.onCollisionEnter += HandlePlatformCollision;
+        }
+
+        m_platforms.AddRange(platforms);
+    }
+
 }

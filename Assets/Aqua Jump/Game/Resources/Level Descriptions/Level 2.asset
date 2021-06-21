@@ -19,5 +19,9 @@ MonoBehaviour:
   - platform: {fileID: 6126333858057482808, guid: f17c79501dc5b6347aa71cdcf567fad4,
       type: 3}
     chance: 0.3
-  spawnCount: 2
+  powerUps:
+  - powerUp: {fileID: 5469593841795788584, guid: 8b23f676c83d0c44fa0782a9707cec63,
+      type: 3}
+    chance: 0.3
+  minimumHeightDifference: 2
   heightRange: {x: 20, y: 50}
