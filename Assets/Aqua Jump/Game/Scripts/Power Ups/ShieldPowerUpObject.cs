@@ -5,7 +5,7 @@ using System;
 
 public class ShieldPowerUp : BasePowerUp
 {
-    public ShieldPowerUp(float time, Action onPowerUpEnded) : base(time, onPowerUpEnded)
+    public ShieldPowerUp(PowerUpSettings settings) : base(settings)
     {
 
     }
@@ -14,8 +14,8 @@ public class ShieldPowerUp : BasePowerUp
 
 public class ShieldPowerUpObject : BasePowerUpObject
 {
-    protected override void OnPlayerEnter(Player player)
+    protected override void OnPlayerEnter(Player player, PowerUpSettings settings)
     {
-        player.AddShieldPowerUp();
+        player.AddShieldPowerUp(settings);
     }
 }

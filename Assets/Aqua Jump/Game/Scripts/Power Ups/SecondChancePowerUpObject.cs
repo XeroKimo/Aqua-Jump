@@ -5,7 +5,7 @@ using System;
 
 public class SecondChancePowerUp : BasePowerUp
 {
-    public SecondChancePowerUp(float time, Action onPowerUpEnded) : base(time, onPowerUpEnded)
+    public SecondChancePowerUp(PowerUpSettings settings) : base(settings)
     {
 
     }
@@ -14,8 +14,8 @@ public class SecondChancePowerUp : BasePowerUp
 
 public class SecondChancePowerUpObject : BasePowerUpObject
 {
-    protected override void OnPlayerEnter(Player player)
+    protected override void OnPlayerEnter(Player player, PowerUpSettings settings)
     {
-        player.AddSecondChancePowerUp();
+        player.AddSecondChancePowerUp(settings);
     }
 }

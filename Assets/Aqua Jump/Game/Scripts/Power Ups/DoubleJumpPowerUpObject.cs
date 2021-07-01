@@ -5,7 +5,7 @@ using System;
 
 public class DoubleJumpPowerUp : BasePowerUp
 {
-    public DoubleJumpPowerUp(float time, Action onPowerUpEnded) : base(time, onPowerUpEnded)
+    public DoubleJumpPowerUp(PowerUpSettings settings) : base(settings)
     {
 
     }
@@ -14,8 +14,8 @@ public class DoubleJumpPowerUp : BasePowerUp
 
 public class DoubleJumpPowerUpObject : BasePowerUpObject
 {
-    protected override void OnPlayerEnter(Player player)
+    protected override void OnPlayerEnter(Player player, PowerUpSettings settings)
     {
-        player.AddDoubleJumpPowerUp();
+        player.AddDoubleJumpPowerUp(settings);
     }
 }

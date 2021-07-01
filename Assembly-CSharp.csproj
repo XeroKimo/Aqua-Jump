@@ -81,9 +81,11 @@
     <Compile Include="Assets\Aqua Jump\Game\Scripts\Power Ups\SecondChancePowerUpObject.cs" />
     <Compile Include="Assets\Aqua Jump\Game\Scripts\Power Ups\ShieldPowerUpObject.cs" />
     <Compile Include="Assets\Aqua Jump\Game\Scripts\Scriptable Objects\LevelDescription.cs" />
+    <Compile Include="Assets\Aqua Jump\Game\Scripts\Scriptable Objects\PowerUpSettings.cs" />
     <Compile Include="Assets\Aqua Jump\Game\Scripts\UI\BaseUI.cs" />
     <Compile Include="Assets\Aqua Jump\Game\Scripts\UI\GameOverUI.cs" />
     <Compile Include="Assets\Aqua Jump\Game\Scripts\UI\MainUI.cs" />
+    <Compile Include="Assets\Aqua Jump\Game\Scripts\UI\PowerUpUI.cs" />
     <Compile Include="Assets\Aqua Jump\Game\Scripts\Visitors\PlatformCollisionVisitor.cs" />
     <Compile Include="Assets\Aqua Jump\Game\Scripts\Visitors\PlayerCollisionVisitor.cs" />
     <Compile Include="Assets\Aqua Jump\Start Up\Scripts\InitializeGame.cs" />
@@ -735,6 +737,9 @@
     </Reference>
     <Reference Include="UnityEditor.UI">
       <HintPath>C:/Users/Kimor/source/repos/0 - Ongoing/Aqua Jump/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.2D.Sprite.Editor">
+      <HintPath>C:/Users/Kimor/source/repos/0 - Ongoing/Aqua Jump/Library/ScriptAssemblies/Unity.2D.Sprite.Editor.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup></ItemGroup>

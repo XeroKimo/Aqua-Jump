@@ -51,6 +51,8 @@ public class GameManager : MonoBehaviour
         m_controller.onDrag += OnDrag;
         m_mainUI.onRestart += ShuffleWorld;
         m_gameOverUI.onRestart += RestartGame;
+
+        m_aqua.onPowerUpRefreshed += OnPowerUpRefreshed;
     }
 
     private void OnDisable()
@@ -58,6 +60,8 @@ public class GameManager : MonoBehaviour
         m_controller.onDrag -= OnDrag;
         m_mainUI.onRestart -= ShuffleWorld;
         m_gameOverUI.onRestart -= RestartGame;
+
+        m_aqua.onPowerUpRefreshed -= OnPowerUpRefreshed;
     }
 
     // Start is called before the first frame update
@@ -316,6 +320,11 @@ public class GameManager : MonoBehaviour
         }
 
         m_platforms.AddRange(platforms);
+    }
+
+    private void OnPowerUpRefreshed(BasePowerUp powerUp)
+    {
+        m_mainUI.DisplayPowerUp(powerUp);
     }
 
 }

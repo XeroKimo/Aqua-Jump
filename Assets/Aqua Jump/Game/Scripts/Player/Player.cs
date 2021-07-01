@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using System;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(CapsuleCollider2D))]
@@ -37,6 +38,10 @@ public class Player : MonoBehaviour
 
     public Vector2 velocity => m_rigidBody.velocity;
     public bool canRevive => m_powerUps.Any(powerUp => powerUp is SecondChancePowerUp);
+
+    public List<BasePowerUp> powerUps => m_powerUps;
+
+    public event Action<BasePowerUp> onPowerUpRefreshed;
 
     private void Awake()
     {
@@ -160,44 +165,58 @@ public class Player : MonoBehaviour
         m_animator.SetBool("Squishing", false);
     }
 
-    public void AddDoubleJumpPowerUp()
+    public void AddDoubleJumpPowerUp(PowerUpSettings settings)
     {
         BasePowerUp powerUp = m_powerUps.FirstOrDefault(p => p is DoubleJumpPowerUp);
+
+        m_canDoubleJump = true;
+
         if(powerUp != null)
         {
-            powerUp.Reset();
+            powerUp.Reset(settings);
         }
         else
         {
-            m_canDoubleJump = true;
-            m_powerUps.Add(new DoubleJumpPowerUp(30, EndDoubleJumpPowerUp));
+            powerUp = new DoubleJumpPowerUp(settings);
+            powerUp.onPowerUpEnded += EndDoubleJumpPowerUp;
+            m_powerUps.Add(powerUp);
         }
+
+        onPowerUpRefreshed?.Invoke(powerUp);
     }
 
-    public void AddShieldPowerUp()
+    public void AddShieldPowerUp(PowerUpSettings settings)
     {
         BasePowerUp powerUp = m_powerUps.FirstOrDefault(p => p is ShieldPowerUp);
         if(powerUp != null)
         {
-            powerUp.Reset();
+            powerUp.Reset(settings);
         }
         else
         {
-            m_powerUps.Add(new ShieldPowerUp(30, EndShieldPowerUp));
+            powerUp = new ShieldPowerUp(settings);
+            powerUp.onPowerUpEnded += EndShieldPowerUp;
+            m_powerUps.Add(powerUp);
         }
+
+        onPowerUpRefreshed?.Invoke(powerUp);
     }
 
-    public void AddSecondChancePowerUp()
+    public void AddSecondChancePowerUp(PowerUpSettings settings)
     {
         BasePowerUp powerUp = m_powerUps.FirstOrDefault(p => p is SecondChancePowerUp);
         if(powerUp != null)
         {
-            powerUp.Reset();
+            powerUp.Reset(settings);
         }
         else
         {
-            m_powerUps.Add(new SecondChancePowerUp(30, EndSecondChancePowerUp));
+            powerUp = new SecondChancePowerUp(settings);
+            powerUp.onPowerUpEnded += EndSecondChancePowerUp;
+            m_powerUps.Add(powerUp);
         }
+
+        onPowerUpRefreshed?.Invoke(powerUp);
     }
 
     public void ConsumeSecondChance()
